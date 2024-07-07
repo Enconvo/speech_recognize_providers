@@ -1,87 +1,38 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
-  "name": "tts_providers",
+  "name": "speech_recognize_providers",
   "version": "0.0.3",
-  "description": "Text to Speech Providers",
-  "title": "TTS Providers",
+  "description": "Speech To Text Providers",
+  "title": "Speech To Text Providers",
   "icon": "icon.png",
   "author": "EnconvoAI",
   "categories": [
-    "Text To Speech"
+    "Speech To Text"
   ],
   "license": "MIT",
   "type": "module",
   "commands": [
     {
-      "name": "edge_tts_provider",
-      "title": "Edge TTS",
-      "description": "Edge TTS Provider that allows you to use Microsoft Edge's online text-to-speech service",
-      "icon": "edge_tts.jpg",
-      "mode": "llm",
-      "preferences": [
-        {
-          "name": "voice",
-          "title": "Speech Voice",
-          "description": "The voice to TTS.",
-          "type": "dropdown",
-          "required": false,
-          "data": [
-            {
-              "value": "en-US-BrianMultilingualNeural",
-              "title": "BrianMultilingual Online (Natural) - English (United States)"
-            }
-          ],
-          "dataProxy": "tts_providers|edge_voices",
-          "default": "en-US-BrianMultilingualNeural"
-        }
-      ]
-    },
-    {
-      "name": "system_tts_provider",
-      "title": "System TTS",
-      "description": "System TTS Provider that allows you to use Microsoft Edge's online text-to-speech service",
-      "icon": "system.png",
-      "mode": "llm",
-      "preferences": [
-        {
-          "name": "format",
-          "title": "Speech Voice",
-          "description": "The voice to TTS.",
-          "type": "hidden",
-          "required": false,
-          "default": "m4a"
-        }
-      ]
-    },
-    {
-      "name": "edge_voices",
-      "title": "edge_voices",
-      "description": "get edge_voices list",
-      "icon": "icon.png",
-      "showInCommandList": false,
-      "mode": "no-view"
-    },
-    {
-      "name": "mirosoft_tts_provider",
-      "title": "Microsoft TTS",
-      "description": "Microsoft TTS Provider that allows you to use Microsoft Azure's online text-to-speech service",
+      "name": "azure",
+      "title": "Microsoft Speech To Text",
+      "description": "Microsoft Speech To Text Provider that allows you to use Microsoft Azure's online text-to-speech service",
       "icon": "azure.png",
       "mode": "llm",
       "preferences": [
         {
-          "name": "voice",
-          "title": "Speech Voice",
-          "description": "The voice to TTS.",
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "The Language .",
           "type": "dropdown",
           "required": false,
           "data": [
             {
-              "value": "en-US-BrianMultilingualNeural",
-              "title": "Brian Multilingual - Male - English (United States)"
+              "value": "en-US",
+              "title": "en-US"
             }
           ],
-          "dataProxy": "tts_providers|azure_voices",
-          "default": "en-US-BrianMultilingualNeural"
+          "dataProxy": "speech_recognize_providers|azure_voices",
+          "default": "en-US"
         },
         {
           "name": "region",
@@ -102,6 +53,78 @@
       ]
     },
     {
+      "name": "youdao",
+      "title": "Youdao Speech To Text",
+      "description": "Youdao Speech To Text Provider that allows you to use Youdao's online text-to-speech service",
+      "icon": "youdao.png",
+      "mode": "llm",
+      "preferences": [
+        {
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "The Language .",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "value": "zh-CHS",
+              "title": "中文（简体，中国）"
+            }
+          ],
+          "dataProxy": "speech_recognize_providers|youdao_languages",
+          "default": "zh-CHS"
+        },
+        {
+          "name": "youdao_api_key",
+          "title": "API Key",
+          "description": "youdao_api_key",
+          "type": "password",
+          "required": true,
+          "default": ""
+        },
+        {
+          "name": "youdao_api_secret",
+          "title": "API Secret",
+          "description": "youdao_api_secret",
+          "type": "password",
+          "required": true,
+          "default": ""
+        }
+      ]
+    },
+    {
+      "name": "deepgram",
+      "title": "deepgram Speech To Text",
+      "description": "deepgram Speech To Text Provider that allows you to use DeppGram's online text-to-speech service",
+      "icon": "deepgram.png",
+      "mode": "llm",
+      "preferences": [
+        {
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "The Language .",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "value": "en",
+              "title": "English"
+            }
+          ],
+          "dataProxy": "speech_recognize_providers|deepgram_languages",
+          "default": "en"
+        },
+        {
+          "name": "deepgram_token",
+          "title": "deepgram_token",
+          "description": "deepgram_token",
+          "type": "password",
+          "required": true,
+          "default": ""
+        }
+      ]
+    },
+    {
       "name": "azure_voices",
       "title": "azure_voices",
       "description": "get azure_voices list",
@@ -110,207 +133,27 @@
       "mode": "no-view"
     },
     {
-      "name": "openai_tts_provider",
-      "title": "OpenAI TTS",
-      "description": "OpenAI TTS Provider that allows you to use OpenAI's online text-to-speech service",
-      "icon": "openai.png",
-      "mode": "llm",
-      "preferences": [
-        {
-          "name": "openAIApiKey",
-          "description": "OpenAI api key",
-          "type": "password",
-          "required": false,
-          "title": "OpenAI Api Key",
-          "default": "",
-          "defaultProxy": "llm|chat_open_ai",
-          "placeholder": "OpenAI Api Key"
-        },
-        {
-          "name": "baseUrl",
-          "description": "OpenAI api base url",
-          "type": "textfield",
-          "required": false,
-          "title": "OpenAI Api Base Url",
-          "default": "",
-          "defaultProxy": "llm|chat_open_ai",
-          "placeholder": "OpenAI Api Base Url"
-        },
-        {
-          "name": "modelName",
-          "description": "The model to TTS.",
-          "type": "dropdown",
-          "required": false,
-          "title": "Model Name",
-          "default": "tts-1",
-          "data": [
-            {
-              "title": "tts-1",
-              "value": "tts-1"
-            },
-            {
-              "title": "tts-1-hd",
-              "value": "tts-1-hd"
-            }
-          ]
-        },
-        {
-          "name": "voice",
-          "description": "The voice to TTS.",
-          "type": "dropdown",
-          "required": false,
-          "title": "Voice",
-          "default": "alloy",
-          "data": [
-            {
-              "title": "alloy",
-              "value": "alloy"
-            },
-            {
-              "title": "echo",
-              "value": "echo"
-            },
-            {
-              "title": "fable",
-              "value": "fable"
-            },
-            {
-              "title": "onyx",
-              "value": "onyx"
-            },
-            {
-              "title": "nova",
-              "value": "nova"
-            },
-            {
-              "title": "shimmer",
-              "value": "shimmer"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "elevenlabs_tts_provider",
-      "title": "ElevenLabs TTS",
-      "description": "ElevenLabs TTS Provider that allows you to use OpenAI's online text-to-speech service",
-      "icon": "elevenlabs.png",
-      "mode": "llm",
-      "preferences": [
-        {
-          "name": "api_key",
-          "description": "Api Key",
-          "type": "password",
-          "required": false,
-          "title": "Api Key",
-          "default": "",
-          "placeholder": "ElevenLabs Api Key"
-        },
-        {
-          "name": "baseUrl",
-          "description": "ElevenLabs api base url",
-          "type": "textfield",
-          "required": false,
-          "title": "ElevenLabs Api Base Url",
-          "default": "https://api.elevenlabs.io/v1",
-          "placeholder": "ElevenLabs Api Base Url"
-        },
-        {
-          "name": "modelName",
-          "description": "The model to TTS.",
-          "type": "dropdown",
-          "required": false,
-          "title": "Model Name",
-          "default": "eleven_multilingual_v2",
-          "data": [
-            {
-              "title": "Eleven Multilingual v2",
-              "value": "eleven_multilingual_v2"
-            }
-          ],
-          "dataProxy": "tts_providers|elevenlabs_models"
-        },
-        {
-          "name": "voice",
-          "description": "The voice to TTS.",
-          "type": "dropdown",
-          "required": false,
-          "title": "Voice",
-          "default": "21m00Tcm4TlvDq8ikWAM",
-          "data": [
-            {
-              "title": "Rachel - female - american - calm- young- narration",
-              "value": "21m00Tcm4TlvDq8ikWAM"
-            }
-          ],
-          "dataProxy": "tts_providers|elevenlabs_voices"
-        }
-      ]
-    },
-    {
-      "name": "elevenlabs_voices",
-      "title": "elevenlabs_voices",
-      "description": "get elevenlabs_voices list",
+      "name": "youdao_languages",
+      "title": "youdao_languages",
+      "description": "get youdao_languages list",
       "icon": "icon.png",
       "showInCommandList": false,
-      "mode": "no-view",
-      "preferences": [
-        {
-          "name": "api_key",
-          "description": "Api Key",
-          "type": "password",
-          "required": false,
-          "title": "Api Key",
-          "default": "",
-          "defaultProxy": "tts_providers|elevenlabs_tts_provider",
-          "placeholder": "ElevenLabs Api Key"
-        },
-        {
-          "name": "baseUrl",
-          "description": "ElevenLabs api base url",
-          "type": "textfield",
-          "required": false,
-          "title": "ElevenLabs Api Base Url",
-          "default": "https://api.elevenlabs.io/v1",
-          "placeholder": "ElevenLabs Api Base Url"
-        }
-      ]
+      "mode": "no-view"
     },
     {
-      "name": "elevenlabs_models",
-      "title": "elevenlabs_models",
-      "description": "get elevenlabs_models list",
+      "name": "deepgram_languages",
+      "title": "deepgram_languages",
+      "description": "get deepgram_languages list",
       "icon": "icon.png",
       "showInCommandList": false,
-      "mode": "no-view",
-      "preferences": [
-        {
-          "name": "api_key",
-          "description": "Api Key",
-          "type": "password",
-          "required": false,
-          "title": "Api Key",
-          "default": "",
-          "defaultProxy": "tts_providers|elevenlabs_tts_provider",
-          "placeholder": "ElevenLabs Api Key"
-        },
-        {
-          "name": "baseUrl",
-          "description": "ElevenLabs api base url",
-          "type": "textfield",
-          "required": false,
-          "title": "ElevenLabs Api Base Url",
-          "default": "https://api.elevenlabs.io/v1",
-          "placeholder": "ElevenLabs Api Base Url"
-        }
-      ]
+      "mode": "no-view"
     }
   ],
   "dependencies": {
     "@enconvo/api": "^0.1.125",
     "axios": "^1.4.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
-    "msedge-tts": "^1.3.4",
+    "msedge-Speech To Text": "^1.3.4",
     "openai": "^4.33.0"
   },
   "devDependencies": {
