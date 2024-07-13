@@ -36,18 +36,6 @@ const voices = [
     "value": "zh"
   },
   {
-    "title": "中文（简体）",
-    "value": "zh-CN"
-  },
-  {
-    "title": "中文（简体）",
-    "value": "zh-Hans"
-  },
-  {
-    "title": "中文（繁體）",
-    "value": "zh-TW"
-  },
-  {
     "title": "中文（繁體）",
     "value": "zh-Hant"
   },

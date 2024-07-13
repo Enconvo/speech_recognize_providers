@@ -1,21 +1,21 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.3",
-  "description": "Speech To Text Providers",
-  "title": "Speech To Text Providers",
+  "version": "0.0.5",
+  "description": "Speech-to-Text Providers",
+  "title": "Speech-to-Text Providers",
   "icon": "icon.png",
   "author": "EnconvoAI",
   "categories": [
-    "Speech To Text"
+    "Speech-to-Text"
   ],
   "license": "MIT",
   "type": "module",
   "commands": [
     {
       "name": "azure",
-      "title": "Microsoft Speech To Text",
-      "description": "Microsoft Speech To Text Provider that allows you to use Microsoft Azure's online text-to-speech service",
+      "title": "Microsoft Speech-to-Text",
+      "description": "Microsoft Speech-to-Text Provider that allows you to use Microsoft Azure's online Speech-to-Text service",
       "icon": "azure.png",
       "mode": "llm",
       "preferences": [
@@ -39,6 +39,7 @@
           "title": "Resource Region",
           "description": "The region of the resource.",
           "type": "textfield",
+          "defaultProxy": "tts_providers|mirosoft_tts_provider",
           "required": true,
           "default": ""
         },
@@ -46,6 +47,7 @@
           "name": "resource_key",
           "title": "Resource Key",
           "description": "The resource key of the resource.",
+          "defaultProxy": "tts_providers|mirosoft_tts_provider",
           "type": "password",
           "required": true,
           "default": ""
@@ -54,8 +56,8 @@
     },
     {
       "name": "youdao",
-      "title": "Youdao Speech To Text",
-      "description": "Youdao Speech To Text Provider that allows you to use Youdao's online text-to-speech service",
+      "title": "Youdao Speech-to-Text",
+      "description": "Youdao Speech-to-Text Provider that allows you to use Youdao's online Speech-to-Text service",
       "icon": "youdao.png",
       "mode": "llm",
       "preferences": [
@@ -94,8 +96,8 @@
     },
     {
       "name": "deepgram",
-      "title": "deepgram Speech To Text",
-      "description": "deepgram Speech To Text Provider that allows you to use DeppGram's online text-to-speech service",
+      "title": "Deepgram Speech-to-Text",
+      "description": "Deepgram Speech-to-Text Provider that allows you to use Deepgram's online Speech-to-Text service",
       "icon": "deepgram.png",
       "mode": "llm",
       "preferences": [
@@ -121,6 +123,275 @@
           "type": "password",
           "required": true,
           "default": ""
+        }
+      ]
+    },
+    {
+      "name": "groq",
+      "title": "Groq Speech-to-Text",
+      "description": "Groq Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
+      "icon": "groq.png",
+      "mode": "llm",
+      "preferences": [
+        {
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "The Language .",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Afrikaans",
+              "value": "af"
+            },
+            {
+              "title": "اَلْعَرَبِيَّةُ",
+              "value": "ar"
+            },
+            {
+              "title": "Հայերեն",
+              "value": "hy"
+            },
+            {
+              "title": "Azərbaycan dili",
+              "value": "az"
+            },
+            {
+              "title": "Беларуская мова",
+              "value": "be"
+            },
+            {
+              "title": "Bosanski",
+              "value": "bs"
+            },
+            {
+              "title": "Български",
+              "value": "bg"
+            },
+            {
+              "title": "Català",
+              "value": "ca"
+            },
+            {
+              "title": "中文",
+              "value": "zh"
+            },
+            {
+              "title": "Hrvatski",
+              "value": "hr"
+            },
+            {
+              "title": "Čeština",
+              "value": "cs"
+            },
+            {
+              "title": "Dansk",
+              "value": "da"
+            },
+            {
+              "title": "Nederlands",
+              "value": "nl"
+            },
+            {
+              "title": "English",
+              "value": "en"
+            },
+            {
+              "title": "Eesti keel",
+              "value": "et"
+            },
+            {
+              "title": "Suomi",
+              "value": "fi"
+            },
+            {
+              "title": "Français",
+              "value": "fr"
+            },
+            {
+              "title": "Galego",
+              "value": "gl"
+            },
+            {
+              "title": "Deutsch",
+              "value": "de"
+            },
+            {
+              "title": "Ελληνικά",
+              "value": "el"
+            },
+            {
+              "title": "עברית",
+              "value": "he"
+            },
+            {
+              "title": "हिन्दी",
+              "value": "hi"
+            },
+            {
+              "title": "Magyar",
+              "value": "hu"
+            },
+            {
+              "title": "Íslenska",
+              "value": "is"
+            },
+            {
+              "title": "Bahasa Indonesia",
+              "value": "id"
+            },
+            {
+              "title": "Italiano",
+              "value": "it"
+            },
+            {
+              "title": "日本語",
+              "value": "ja"
+            },
+            {
+              "title": "ಕನ್ನಡ",
+              "value": "kn"
+            },
+            {
+              "title": "Қазақша",
+              "value": "kk"
+            },
+            {
+              "title": "한국어",
+              "value": "ko"
+            },
+            {
+              "title": "Latviešu",
+              "value": "lv"
+            },
+            {
+              "title": "Lietuvių",
+              "value": "lt"
+            },
+            {
+              "title": "Македонски",
+              "value": "mk"
+            },
+            {
+              "title": "Bahasa Melayu",
+              "value": "ms"
+            },
+            {
+              "title": "मराठी",
+              "value": "mr"
+            },
+            {
+              "title": "Māori",
+              "value": "mi"
+            },
+            {
+              "title": "नेपाली",
+              "value": "ne"
+            },
+            {
+              "title": "Norsk",
+              "value": "no"
+            },
+            {
+              "title": "فارسی",
+              "value": "fa"
+            },
+            {
+              "title": "Polski",
+              "value": "pl"
+            },
+            {
+              "title": "Português",
+              "value": "pt"
+            },
+            {
+              "title": "Română",
+              "value": "ro"
+            },
+            {
+              "title": "Русский",
+              "value": "ru"
+            },
+            {
+              "title": "Српски",
+              "value": "sr"
+            },
+            {
+              "title": "Slovenčina",
+              "value": "sk"
+            },
+            {
+              "title": "Slovenščina",
+              "value": "sl"
+            },
+            {
+              "title": "Español",
+              "value": "es"
+            },
+            {
+              "title": "Kiswahili",
+              "value": "sw"
+            },
+            {
+              "title": "Svenska",
+              "value": "sv"
+            },
+            {
+              "title": "Tagalog",
+              "value": "tl"
+            },
+            {
+              "title": "தமிழ்",
+              "value": "ta"
+            },
+            {
+              "title": "ไทย",
+              "value": "th"
+            },
+            {
+              "title": "Türkçe",
+              "value": "tr"
+            },
+            {
+              "title": "Українська",
+              "value": "uk"
+            },
+            {
+              "title": "اردو",
+              "value": "ur"
+            },
+            {
+              "title": "Tiếng Việt",
+              "value": "vi"
+            },
+            {
+              "title": "Cymraeg",
+              "value": "cy"
+            }
+          ],
+          "default": "en"
+        },
+        {
+          "name": "api_key",
+          "title": "Groq API Key",
+          "description": "Groq API Key",
+          "type": "password",
+          "required": true,
+          "default": ""
+        }
+      ]
+    },
+    {
+      "name": "whisperOffline",
+      "title": "Local Whisper Speech-to-Text",
+      "description": "Local Whisper Speech-to-Text Provider that runs on your local machine",
+      "icon": "local_whisper.png",
+      "mode": "llm",
+      "preferences": [
+        {
+          "name": "localWhisper",
+          "title": "Local Whisper Settings",
+          "type": "localWhisper"
         }
       ]
     },
@@ -153,7 +424,7 @@
     "@enconvo/api": "^0.1.125",
     "axios": "^1.4.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
-    "msedge-Speech To Text": "^1.3.4",
+    "msedge-Speech-to-Text": "^1.3.4",
     "openai": "^4.33.0"
   },
   "devDependencies": {
