@@ -537,26 +537,7 @@ async function fetch_model() {
 export default async function main(req: Request) {
     const { options: { text } } = await req.json()
 
-    const modelCacheDir = environment.assetsPath + `/models`
-    if (!fs.existsSync(modelCacheDir)) {
-        fs.mkdirSync(modelCacheDir, { recursive: true })
-    }
-    const modelCachePath = `${modelCacheDir}/${environment.commandName}.json`
-
-    console.log('text', text, modelCachePath)
-    fs.existsSync(modelCachePath) || fs.writeFileSync(modelCachePath, '[]')
-
-    const modelContent = fs.readFileSync(modelCachePath, 'utf8')
-    let models = JSON.parse(modelContent)
-
-    try {
-        if (text === 'refresh' || models.length === 0) {
-            models = await fetch_model()
-            fs.writeFileSync(modelCachePath, JSON.stringify(models))
-        }
-    } catch (err) {
-        console.log(err)
-    }
+    let models = await fetch_model()
 
     return JSON.stringify(models)
 }
