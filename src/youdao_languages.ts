@@ -4,7 +4,7 @@ import fs from 'fs'
 
 const voices = [
     {
-      "title": "中文（简体，中国）",
+      "title": "中文简体（Chinese Mandarin）",
       "value": "zh-CHS"
     },
     {

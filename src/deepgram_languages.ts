@@ -32,7 +32,7 @@ const voices = [
     "value": "ja"
   },
   {
-    "title": "Chinese (Simplified)",
+    "title": "中文简体（Chinese Mandarin）",
     "value": "zh"
   },
   {

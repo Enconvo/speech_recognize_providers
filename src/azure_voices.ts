@@ -64,7 +64,7 @@ const voices = [
         "value": "en-ZA"
     },
     {
-        "title": "Chinese (Mandarin, Simplified)",
+        "title": "中文简体（Chinese Mandarin）",
         "value": "zh-CN"
     },
     {
