@@ -32,11 +32,11 @@ const voices = [
     "value": "ja"
   },
   {
-    "title": "中文（简体）",
+    "title": "Chinese (Simplified)",
     "value": "zh"
   },
   {
-    "title": "中文（繁體）",
+    "title": "Chinese (Traditional)",
     "value": "zh-Hant"
   },
   {
