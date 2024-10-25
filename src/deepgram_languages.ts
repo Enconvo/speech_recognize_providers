@@ -4,6 +4,10 @@ import fs from 'fs'
 
 const voices = [
   {
+    "title": "Auto Detect",
+    "value": "auto"
+  },
+  {
     "title": "English",
     "value": "en"
   },
