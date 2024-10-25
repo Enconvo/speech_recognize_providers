@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -97,12 +97,11 @@
           "data": [
             {
               "title": "English",
-              "value": "en"
+              "value": "en-us"
             }
           ],
-          "dataProxy": "speech_recognize_providers|deepgram_languages",
-          "default": "en",
-          "visibility": "hidden"
+          "dataProxy": "speech_recognize_providers|assemblyai_languages",
+          "default": "auto"
         },
         {
           "name": "api_key",
@@ -541,6 +540,14 @@
       "name": "deepgram_languages",
       "title": "deepgram_languages",
       "description": "get deepgram_languages list",
+      "icon": "icon.png",
+      "showInCommandList": false,
+      "mode": "no-view"
+    },
+    {
+      "name": "assemblyai_languages",
+      "title": "assemblyai_languages",
+      "description": "get assemblyai_languages list",
       "icon": "icon.png",
       "showInCommandList": false,
       "mode": "no-view"
