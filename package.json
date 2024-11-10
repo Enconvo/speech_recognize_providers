@@ -1,13 +1,13 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
   "author": "EnconvoAI",
   "categories": [
-    "Speech-to-Text"
+    "Provider"
   ],
   "license": "MIT",
   "type": "module",
@@ -17,7 +17,7 @@
       "title": "Enconvo Cloud Plan",
       "description": "Enconvo Speech-to-Text Provider that allows you to use high speed online Speech-to-Text service",
       "icon": "enconvo.png",
-      "mode": "llm",
+      "mode": "provider",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -25,12 +25,6 @@
           "description": "The Language .",
           "type": "dropdown",
           "required": false,
-          "data": [
-            {
-              "title": "English (United States)",
-              "value": "en-US"
-            }
-          ],
           "dataProxy": "speech_recognize_providers|azure_voices",
           "default": "en-US"
         }
@@ -41,7 +35,7 @@
       "title": "Microsoft",
       "description": "Microsoft Speech-to-Text Provider that allows you to use Microsoft Azure's online Speech-to-Text service",
       "icon": "azure.png",
-      "mode": "llm",
+      "mode": "provider",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -49,12 +43,6 @@
           "description": "The Language .",
           "type": "dropdown",
           "required": false,
-          "data": [
-            {
-              "title": "English (United States)",
-              "value": "en-US"
-            }
-          ],
           "dataProxy": "speech_recognize_providers|azure_voices",
           "default": "en-US"
         },
@@ -66,7 +54,6 @@
           "required": true,
           "default": "eastus",
           "defaultProxy": "KEY_AZURE_SPEECH_REGION",
-          "data": [],
           "dataProxy": "speech_recognize_providers|azure_speech_regions"
         },
         {
@@ -86,7 +73,7 @@
       "title": "Assembly AI",
       "description": "Assembly AI Speech-to-Text Provider that allows you to use Assembly AI's online Speech-to-Text service",
       "icon": "assemblyai.png",
-      "mode": "llm",
+      "mode": "provider",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -94,12 +81,6 @@
           "description": "The Language .",
           "type": "dropdown",
           "required": false,
-          "data": [
-            {
-              "title": "English",
-              "value": "en-us"
-            }
-          ],
           "dataProxy": "speech_recognize_providers|assemblyai_languages",
           "default": "auto"
         },
@@ -120,7 +101,7 @@
       "title": "Youdao",
       "description": "Youdao Speech-to-Text Provider that allows you to use Youdao's online Speech-to-Text service",
       "icon": "youdao.png",
-      "mode": "llm",
+      "mode": "provider",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -128,12 +109,6 @@
           "description": "The Language .",
           "type": "dropdown",
           "required": false,
-          "data": [
-            {
-              "title": "中文简体（Chinese Mandarin）",
-              "value": "zh-CHS"
-            }
-          ],
           "dataProxy": "speech_recognize_providers|youdao_languages",
           "default": "zh-CHS"
         },
@@ -164,7 +139,7 @@
       "title": "Deepgram",
       "description": "Deepgram Speech-to-Text Provider that allows you to use Deepgram's online Speech-to-Text service",
       "icon": "deepgram.png",
-      "mode": "llm",
+      "mode": "provider",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -172,12 +147,6 @@
           "description": "The Language .",
           "type": "dropdown",
           "required": false,
-          "data": [
-            {
-              "title": "English",
-              "value": "en"
-            }
-          ],
           "dataProxy": "speech_recognize_providers|deepgram_languages",
           "default": "en"
         },
@@ -224,7 +193,7 @@
       "title": "Groq Whisper (Beta)",
       "description": "Groq Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
       "icon": "groq.png",
-      "mode": "llm",
+      "mode": "provider",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -503,7 +472,7 @@
       "title": "Local Whisper (Beta)",
       "description": "Local Whisper Speech-to-Text Provider that runs on your local machine",
       "icon": "local_whisper.png",
-      "mode": "llm",
+      "mode": "provider",
       "preferences": [
         {
           "name": "localWhisper",
