@@ -219,7 +219,7 @@ async function fetch_model() {
 }
 
 export default async function main(req: Request) {
-  const { options: { text } } = await req.json()
+  const { text } = await req.json()
 
   const modelCacheDir = environment.assetsPath + `/models`
   if (!fs.existsSync(modelCacheDir)) {

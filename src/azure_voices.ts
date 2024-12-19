@@ -1,5 +1,3 @@
-import { environment } from "@enconvo/api";
-import fs from 'fs'
 
 
 const voices = [
@@ -534,9 +532,7 @@ async function fetch_model() {
     return models
 }
 
-export default async function main(req: Request) {
-    const { options: { text } } = await req.json()
-
+export default async function main() {
     let models = await fetch_model()
 
     return JSON.stringify(models)
