@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.16",
+  "version": "0.0.100",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -486,6 +486,7 @@
       "title": "azure_voices",
       "description": "get azure_voices list",
       "icon": "icon.png",
+      "commandType": "function_command",
       "showInCommandList": false,
       "mode": "no-view"
     },
@@ -494,6 +495,7 @@
       "title": "azure_speech_regions",
       "description": "get azure_speech_regions list",
       "icon": "icon.png",
+      "commandType": "function_command",
       "showInCommandList": false,
       "mode": "no-view"
     },
@@ -502,6 +504,7 @@
       "title": "youdao_languages",
       "description": "get youdao_languages list",
       "icon": "icon.png",
+      "commandType": "function_command",
       "showInCommandList": false,
       "mode": "no-view"
     },
@@ -510,6 +513,7 @@
       "title": "deepgram_languages",
       "description": "get deepgram_languages list",
       "icon": "icon.png",
+      "commandType": "function_command",
       "showInCommandList": false,
       "mode": "no-view"
     },
@@ -518,12 +522,13 @@
       "title": "assemblyai_languages",
       "description": "get assemblyai_languages list",
       "icon": "icon.png",
+      "commandType": "function_command",
       "showInCommandList": false,
       "mode": "no-view"
     }
   ],
   "dependencies": {
-    "@enconvo/api": "^0.1.152",
+    "@enconvo/api": "^0.1.161",
     "axios": "^1.7.9",
     "microsoft-cognitiveservices-speech-sdk": "^1.42.0",
     "openai": "^4.77.0"
