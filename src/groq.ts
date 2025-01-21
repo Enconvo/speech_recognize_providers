@@ -1,9 +1,8 @@
 import { SpeechToTextProvider } from "@enconvo/api";
 import Groq from "groq-sdk";
-import { AudioChunk, splitAudio } from "./audio_util.ts";
+import { AudioChunk, preprocessAudio, splitAudio } from "./audio_util.ts";
 import fs from "fs"
 import path from "path"
-import { execSync } from "child_process"
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
@@ -19,13 +18,10 @@ export class GroqProvider extends SpeechToTextProvider {
         this.client = new Groq({ apiKey: options.apiKey })
     }
 
-
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
         const inputPath = params.audioFilePath.replace("file://", "")
 
-        // Set chunk size to 34MB (34 * 1024 * 1024 bytes)
-        const chunkSize = 1024 * 1024
-        // const chunkSize = 24 * 1024 * 1024
+        const chunkSize = 24 * 1024 * 1024
         const chunkOverlapTime = 5 // seconds
         const processedPath = preprocessAudio(inputPath)
         console.log("processedPath", processedPath)
@@ -33,7 +29,9 @@ export class GroqProvider extends SpeechToTextProvider {
         const chunks = await splitAudio(processedPath, chunkSize, chunkOverlapTime)
         const transcribeResults = await transcribeChunks(this.client, chunks, this.options)
         // clean up
-        fs.unlinkSync(processedPath)
+        if (inputPath !== processedPath) {
+            fs.unlinkSync(processedPath)
+        }
 
         // Merge the transcription results
         const mergedText = mergeTranscriptionResults(transcribeResults);
@@ -144,28 +142,6 @@ function mergeTranscriptionResults(results: SpeechToTextProvider.SpeechToTextRes
 
 
 
-/**
- * Preprocess audio file to 16kHz mono FLAC using ffmpeg
- */
-function preprocessAudio(inputPath: string): string {
-    if (!fs.existsSync(inputPath)) {
-        throw new Error(`Input file not found: ${inputPath}`);
-    }
-    // If input is already a FLAC file, return it directly
-    if (path.extname(inputPath).toLowerCase() === '.flac') {
-        return inputPath;
-    }
-    // Get the directory of the input file and create output path in same directory
-    const outputPath = path.join(path.dirname(inputPath), `${path.basename(inputPath).split(".")[0]}.flac`);
-
-    console.log("Converting audio to 16kHz mono FLAC...");
-    try {
-        execSync(`ffmpeg -hide_banner -loglevel error -i "${inputPath}" -ar 16000 -ac 1 -c:a flac -y "${outputPath}"`);
-        return outputPath;
-    } catch (e: any) {
-        throw new Error(`FFmpeg conversion failed: ${e.message}`);
-    }
-}
 
 /**
  * Transcribe a single audio chunk with Groq API
@@ -228,13 +204,16 @@ async function transcribeChunks(
             }
         } finally {
             // Cleanup temp file
-            if (fs.existsSync(tempFile)) {
+            if (fs.existsSync(tempFile) && chunks.length > 1) {
                 fs.unlinkSync(tempFile);
             }
-            // clean up
-            fs.rmdirSync(path.dirname(tempFile))
         }
     }
+
+    if (chunks.length > 1) {
+        fs.rmdirSync(path.dirname(chunks[0].path))
+    }
+
     console.log(" total api time: ", totalApiTime)
     return results
 }

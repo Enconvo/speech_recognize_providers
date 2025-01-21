@@ -2,7 +2,7 @@ import { parseFile } from 'music-metadata';
 import * as fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { uuid } from '@enconvo/api';
+import { CommandUtil, uuid } from '@enconvo/api';
 
 export const getDuration = async (filePath: string): Promise<number> => {
   const metadata = await parseFile(filePath);
@@ -13,6 +13,36 @@ export interface AudioChunk {
   path: string;
   start: number;
   duration: number;
+}
+
+
+/**
+ * Preprocess audio file to 16kHz mono FLAC using ffmpeg
+ */
+export function preprocessAudio(inputPath: string): string {
+
+  if (!fs.existsSync(inputPath)) {
+    throw new Error(`Input file not found: ${inputPath}`);
+  }
+
+  // If input is already a FLAC file, return it directly
+  if (path.extname(inputPath).toLowerCase() === '.flac' || path.extname(inputPath).toLowerCase() === '.mp3') {
+    // copy file
+    // const outputPath = path.join(CommandUtil.cachePath(), `${path.basename(inputPath)}`);
+    // fs.copyFileSync(inputPath, outputPath);
+    return inputPath;
+  }
+
+  // Get the directory of the input file and create output path in same directory
+  const outputPath = path.join(path.dirname(inputPath), `${path.basename(inputPath).split(".")[0]}.flac`);
+
+  console.log("Converting audio to 16kHz mono FLAC...");
+  try {
+    execSync(`ffmpeg -hide_banner -loglevel error -i "${inputPath}" -ar 16000 -ac 1 -c:a flac -y "${outputPath}"`);
+    return outputPath;
+  } catch (e: any) {
+    throw new Error(`FFmpeg conversion failed: ${e.message}`);
+  }
 }
 
 export const splitAudio = async (filename: string, chunkSize: number, chunkOverlapTime: number): Promise<AudioChunk[]> => {
@@ -27,11 +57,14 @@ export const splitAudio = async (filename: string, chunkSize: number, chunkOverl
 
   // Calculate number of chunks needed based on file size
   const numChunks = Math.ceil(fileSize / MAX_CHUNK_SIZE);
+
+  if (numChunks === 1) {
+    return [{ path: filename, start: 0, duration: duration }]
+  }
+
   console.log(`Audio will be split into ${numChunks} chunks of max ${MAX_CHUNK_SIZE} bytes (1MB) each`);
   const chunkSeconds = duration / numChunks
   console.log(`Chunk seconds: ${chunkSeconds}`)
-
-
 
   // Create directory for audio chunks
   const chunkDir = path.join(path.dirname(filename), uuid());
@@ -48,7 +81,7 @@ export const splitAudio = async (filename: string, chunkSize: number, chunkOverl
     const duration = chunkDuration + (i < numChunks - 1 ? OVERLAP_SECONDS : 0);
 
     // Output path for this chunk
-    const chunkPath = path.join(chunkDir, `chunk_${i.toString().padStart(3, '0')}.flac`);
+    const chunkPath = path.join(chunkDir, `chunk_${i.toString().padStart(3, '0')}${path.extname(filename)}`);
 
     // Use ffmpeg to extract chunk with overlap
     // Don't use -c copy for splitting as it can cause duration issues
