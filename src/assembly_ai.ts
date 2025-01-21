@@ -24,12 +24,11 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
         const inputPath = params.audioFilePath.replace("file://", "")
         const filePath = preprocessAudio(inputPath)
 
-        const transcriptionParams = {
-            audio: filePath,
-            speaker_labels: true
-        }
 
-        const transcript = await this.client.transcripts.transcribe(transcriptionParams)
+        const transcript = await this.client.transcripts.transcribe({
+            audio: filePath,
+            language_code: this.options.speechRecognitionLanguage.value,
+        })
 
         let text: string | undefined = undefined
         if (transcript.status === 'error') {
@@ -37,9 +36,6 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
             text = transcript.error
         } else {
             text = transcript.text || ""
-            for (let utterance of transcript.utterances!) {
-                console.log(`Speaker ${utterance.speaker}: ${utterance.text}`)
-            }
         }
 
         // clean up

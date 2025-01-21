@@ -2,7 +2,7 @@ import { parseFile } from 'music-metadata';
 import * as fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { CommandUtil, uuid } from '@enconvo/api';
+import { Command, CommandUtil, uuid } from '@enconvo/api';
 
 export const getDuration = async (filePath: string): Promise<number> => {
   const metadata = await parseFile(filePath);
@@ -40,7 +40,7 @@ export function preprocessAudio(inputPath: string, targetFormat: 'flac' | 'wav' 
   }
 
   // Get the directory of the input file and create output path in same directory
-  const outputPath = path.join(path.dirname(inputPath), `${path.basename(inputPath).split(".")[0]}.${targetFormat}`);
+  const outputPath = path.join(CommandUtil.cachePath(), `${path.basename(inputPath).split(".")[0]}.${targetFormat}`);
 
   console.log("Converting audio to 16kHz mono FLAC...");
   try {
