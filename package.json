@@ -216,8 +216,8 @@
         },
         {
           "name": "deepgram_token",
-          "title": "deepgram_token",
-          "description": "deepgram_token",
+          "title": "Deepgram Token",
+          "description": "Deepgram Token",
           "type": "password",
           "required": true,
           "default": "",
@@ -370,6 +370,7 @@
     }
   ],
   "dependencies": {
+    "@deepgram/sdk": "^3.9.0",
     "@enconvo/api": "link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api",
     "assemblyai": "^4.8.0",
     "axios": "^1.7.9",
