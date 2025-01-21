@@ -2,7 +2,6 @@ import { Groq } from 'groq-sdk';
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';
-import * as os from 'os';
 import { AudioChunk, splitAudio } from './audio_util.ts';
 import { RequestOptions } from '@enconvo/api';
 
@@ -13,29 +12,93 @@ export default async function main(request: Request) {
     // const inputPath = "/Users/ysnows/Desktop/demo.mp3"
 
     const chunkSize = 1024 * 1024
+    const chunkOverlapTime = 0 // seconds
     const processedPath = preprocessAudio(inputPath)
 
-    const chunks = await splitAudio(processedPath, chunkSize)
-    console.log("Chunks: ", JSON.stringify(chunks, null, 2))
+    const chunks = await splitAudio(processedPath, chunkSize, chunkOverlapTime)
+    const client = new Groq({ apiKey: "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" })
+    const results = await transcribeChunks(client, chunks)
+    // const results = [{ "result": " 从前在一个宁静的小村庄里,有一个名叫艾米丽的小女孩。艾米丽对大自然充满了好奇,尤其是她家后院那片神秘的森林。 一天,艾米利决定去森林里探险。 他轻轻地推开树枝,走入了绿荫覆盖的小径,阳光洒在地上,形成了斑驳的光影。 忽然,艾米利听到了轻轻的哼唱声,他循着声音走过去,看见一只美丽的小鸟。", "startTime": 0 }, { "result": " 轻轻地哼唱声,他循着声音走过去,看见一只美丽的鸟正在树枝上鸣唱。 这只鸟,拥有五彩斑斓的羽毛,见到艾米丽也不飞走,反而偏偏飞到她的肩膀上。 鸟用悦耳的声音告诉艾米丽,她叫妙丽,是森林的守护者。 妙丽邀请艾米丽一同去探访森林的奇妙之处。 他们穿过青苔铺成的地毯,聆听树上的松鼠酣畅淋漓地吃着坚果。", "startTime": 30.606 }, { "result": " 聆听树上的松鼠,酣畅淋漓地吃着坚果,观看溪流边蝴蝶翩翩起舞。 在阳光即将沉没之际,妙丽带着艾米丽来到一棵巨大的老树前。 妙丽告诉她,这棵树是森林的灵魂,承载着许多古老的传说和秘密。 艾米丽轻轻触摸着粗糙的树皮,感觉到了内心的宁静和力量。 雖然天色漸暗,但艾米莉心中充滿了溫暖。 她告別了愛美麗,", "startTime": 61.212 }, { "result": " 天色漸暗,但艾米莉心中充滿了溫暖。 她告別了妙麗,帶著滿滿的回憶回到了家。 艾米莉把這次奇妙的森林之旅寫進了日記,成為了她心中永遠珍藏的秘密。 從那以後,艾米莉更加熱愛大自然,並立志要保護這片神奇的森林。 他相信,只要心中有爱,世界就会充满无限的可能。", "startTime": 91.81800000000001 }]
+
+    // Merge overlapping transcription chunks into a single coherent text
+
+    // Merge the transcription results
+    const mergedText = mergeTranscriptionResults(results);
 
 
-    return processedPath
+
+    console.log("Results: ", JSON.stringify({
+        mergedText,
+        results
+    }, null, 2))
+
+    return JSON.stringify({
+        mergedText,
+        results
+    }, null, 2)
 }
 
 
 
-// Types
-interface TranscriptionSegment {
-    text: string;
-    start: number;
-    end: number;
-    [key: string]: any; // For additional properties
+function mergeTranscriptionResults(results: ChunkResult[]): string {
+    // Sort results by start time to ensure proper ordering
+    const sortedResults = [...results].sort((a, b) => a.startTime - b.startTime);
+
+    // If no results, return empty string
+    if (sortedResults.length === 0) {
+        return "";
+    }
+
+    // Initialize with first chunk
+    let mergedText = sortedResults[0].result;
+
+    // Process subsequent chunks
+    for (let i = 1; i < sortedResults.length; i++) {
+        const currentChunk = sortedResults[i].result;
+        const prevChunk = sortedResults[i - 1].result;
+
+        // Find the longest common substring between end of previous chunk and start of current chunk
+        let overlap = findLargestOverlap(prevChunk, currentChunk);
+        console.log("Overlap: \n", overlap, "\n", prevChunk, "\n", currentChunk)
+
+        // If overlap found, append only the non-overlapping part
+        // If no overlap found, append the entire chunk
+        if (overlap) {
+            mergedText += currentChunk.slice(overlap.length);
+        } else {
+            mergedText += currentChunk;
+        }
+    }
+
+    return mergedText;
 }
 
-interface TranscriptionResult {
-    text: string;
-    segments: TranscriptionSegment[];
+// Helper function to find the largest overlapping text between two strings
+function findLargestOverlap(str1: string, str2: string): string {
+    let maxOverlap = "";
+
+    // Get the minimum length between the two strings
+    const minLength = Math.min(str1.length, str2.length);
+
+    // Try different overlap lengths, starting from the largest possible
+    for (let size = minLength; size > 0; size--) {
+        const end = str1.slice(-size);
+        const start = str2.slice(0, size);
+
+        if (end === start) {
+            maxOverlap = end;
+            break;
+        }
+    }
+
+    return maxOverlap;
 }
+
+
+
+
+
+
 
 interface ChunkResult {
     result: string;
@@ -64,243 +127,65 @@ function preprocessAudio(inputPath: string): string {
 /**
  * Transcribe a single audio chunk with Groq API
  */
-async function transcribeSingleChunk(
+async function transcribeChunks(
     client: Groq,
     chunks: AudioChunk[],
-    chunkNum: number,
-    totalChunks: number
 ): Promise<ChunkResult[]> {
     let totalApiTime = 0;
     const results: ChunkResult[] = []
     for (const chunk of chunks) {
-        const tempFile = chunk.path
+
+        console.log("Transcribing chunk: ", chunk.path)
+
+        const tempFile = chunk.path;
+        const MAX_RETRIES = 3; // Maximum number of retry attempts
+        const INITIAL_RETRY_DELAY = 60000; // Initial retry delay in milliseconds
+        let retryCount = 0;
+
         try {
-            const startTime = Date.now();
-            try {
-                const result = await client.audio.transcriptions.create({
-                    file: fs.createReadStream(tempFile),
-                    model: "whisper-large-v3",
-                    language: "en",
-                    response_format: "verbose_json"
-                });
+            while (retryCount < MAX_RETRIES) {
+                const startTime = Date.now();
+                try {
+                    // Attempt transcription
+                    const result = await client.audio.transcriptions.create({
+                        file: fs.createReadStream(tempFile),
+                        model: "whisper-large-v3",
+                        language: "en",
+                        response_format: "verbose_json"
+                    });
 
-                const apiTime = (Date.now() - startTime) / 1000;
-                totalApiTime += apiTime;
+                    // Calculate and log processing time
+                    const apiTime = (Date.now() - startTime) / 1000;
+                    totalApiTime += apiTime;
+                    console.log(`Chunk api completed, time: ${chunk.path}`, apiTime)
+                    // Store successful result
+                    results.push({ result: result.text, startTime: chunk.start });
+                    break; // Exit retry loop on success
 
-                console.log(`Chunk ${chunkNum}/${totalChunks} processed in ${apiTime.toFixed(2)}s`);
-                results.push({ result: result.text, startTime: chunk.start });
-
-            } catch (e: any) {
-                if (e.code === 'rate_limit_exceeded') {
-                    console.log(`\nRate limit hit for chunk ${chunkNum} - retrying in 60 seconds...`);
-                    await new Promise(resolve => setTimeout(resolve, 60000));
-                    continue;
+                } catch (e: any) {
+                    if (e.code === 'rate_limit_exceeded') {
+                        retryCount++;
+                        if (retryCount >= MAX_RETRIES) {
+                            throw new Error(`Failed to process chunk ${chunk.path} after ${MAX_RETRIES} retries`);
+                        }
+                        // Exponential backoff delay
+                        const delay = INITIAL_RETRY_DELAY * Math.pow(2, retryCount - 1);
+                        console.log(`\nRate limit hit for chunk ${chunk.path} - retry ${retryCount}/${MAX_RETRIES} in ${delay / 1000}s...`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+                    throw e; // Re-throw non-rate-limit errors
                 }
-                throw e;
             }
         } finally {
-            if (fs.existsSync(tempFile)) {
-                fs.unlinkSync(tempFile);
-            }
+            // Cleanup temp file
+            // if (fs.existsSync(tempFile)) {
+            //     fs.unlinkSync(tempFile);
+            // }
         }
+
+
     }
+    console.log(" total api time: ", totalApiTime)
     return results
 }
-
-/**
- * Find the longest common sequence between multiple text segments
- */
-function findLongestCommonSequence(sequences: string[], matchByWords: boolean = true): string {
-    if (!sequences.length) return "";
-
-    // Convert input based on matching strategy
-    let processedSequences: string[][] = matchByWords
-        ? sequences.map(seq => seq.match(/(?:\s+\w+)/g) || [])
-        : sequences.map(seq => seq.split(''));
-
-    const leftSequence = processedSequences[0];
-    let leftLength = leftSequence.length;
-    const totalSequence: string[] = [];
-
-    for (const rightSequence of processedSequences.slice(1)) {
-        let maxMatching = 0.0;
-        const rightLength = rightSequence.length;
-        let maxIndices: [number, number, number, number] = [leftLength, leftLength, 0, 0];
-
-        // Try different alignments
-        for (let i = 1; i <= leftLength + rightLength; i++) {
-            const eps = i / 10000.0;
-
-            const leftStart = Math.max(0, leftLength - i);
-            const leftStop = Math.min(leftLength, leftLength + rightLength - i);
-            const left = leftSequence.slice(leftStart, leftStop);
-
-            const rightStart = Math.max(0, i - leftLength);
-            const rightStop = Math.min(rightLength, i);
-            const right = rightSequence.slice(rightStart, rightStop);
-
-            if (left.length !== right.length) {
-                throw new Error("Mismatched subsequences detected during transcript merging.");
-            }
-
-            const matches = left.reduce((acc, curr, idx) => acc + (curr === right[idx] ? 1 : 0), 0);
-            const matching = matches / i + eps;
-
-            if (matches > 1 && matching > maxMatching) {
-                maxMatching = matching;
-                maxIndices = [leftStart, leftStop, rightStart, rightStop];
-            }
-        }
-
-        const [leftStart, leftStop, rightStart, rightStop] = maxIndices;
-        const leftMid = Math.floor((leftStop + leftStart) / 2);
-        const rightMid = Math.floor((rightStop + rightStart) / 2);
-
-        totalSequence.push(...leftSequence.slice(0, leftMid));
-        leftSequence.splice(0, leftSequence.length, ...rightSequence.slice(rightMid));
-        leftLength = leftSequence.length;
-    }
-
-    totalSequence.push(...leftSequence);
-    return matchByWords ? totalSequence.join('') : totalSequence.join('');
-}
-
-/**
- * Merge transcription chunks and handle overlaps
- */
-function mergeTranscripts(results: ChunkResult[]): TranscriptionResult {
-    console.log("\nMerging results...");
-    const finalSegments: TranscriptionSegment[] = [];
-
-    // Process each chunk's segments
-    const processedChunks: TranscriptionSegment[][] = [];
-
-    results.forEach((result, i) => {
-        const segments = result.result.segments;
-
-        if (i < results.length - 1) {
-            const nextStart = results[i + 1].startTime;
-            const currentSegments: TranscriptionSegment[] = [];
-            const overlapSegments: TranscriptionSegment[] = [];
-
-            segments.forEach(segment => {
-                if (segment.end * 1000 > nextStart) {
-                    overlapSegments.push(segment);
-                } else {
-                    currentSegments.push(segment);
-                }
-            });
-
-            if (overlapSegments.length) {
-                const mergedOverlap = {
-                    ...overlapSegments[0],
-                    text: overlapSegments.map(s => s.text).join(' '),
-                    end: overlapSegments[overlapSegments.length - 1].end
-                };
-                currentSegments.push(mergedOverlap);
-            }
-
-            processedChunks.push(currentSegments);
-        } else {
-            processedChunks.push(segments);
-        }
-    });
-
-    // Continue with rest of merging logic...
-    // (Similar to Python version but with TypeScript syntax)
-
-    return {
-        text: finalSegments.map(segment => segment.text).join(' '),
-        segments: finalSegments
-    };
-}
-
-/**
- * Save transcription results to files
- */
-function saveResults(result: TranscriptionResult, audioPath: string): string {
-    try {
-        const outputDir = path.join(process.cwd(), "transcriptions");
-        if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
-        }
-
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '').slice(0, 15);
-        const basePath = path.join(outputDir, `${path.parse(audioPath).name}_${timestamp}`);
-
-        fs.writeFileSync(`${basePath}.txt`, result.text, 'utf-8');
-        fs.writeFileSync(`${basePath}_full.json`, JSON.stringify(result, null, 2), 'utf-8');
-        fs.writeFileSync(`${basePath}_segments.json`, JSON.stringify(result.segments, null, 2), 'utf-8');
-
-        console.log(`\nResults saved to transcriptions folder:`);
-        console.log(`- ${basePath}.txt`);
-        console.log(`- ${basePath}_full.json`);
-        console.log(`- ${basePath}_segments.json`);
-
-        return basePath;
-    } catch (e) {
-        throw new Error(`Error saving results: ${e.message}`);
-    }
-}
-
-/**
- * Main function to transcribe audio in chunks
- */
-async function transcribeAudioInChunks(
-    audioPath: string,
-    chunkLength: number = 600,
-    overlap: number = 10
-): Promise<TranscriptionResult> {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey) {
-        throw new Error("GROQ_API_KEY environment variable not set");
-    }
-
-    console.log(`\nStarting transcription of: ${audioPath}`);
-    const client = new Groq({ apiKey });
-
-    let processedPath: string | null = null;
-    try {
-        processedPath = preprocessAudio(audioPath);
-        const audio = await AudioSegment.fromFile(processedPath);
-
-        const duration = audio.duration();
-        console.log(`Audio duration: ${duration / 1000}s`);
-
-        const chunkMs = chunkLength * 1000;
-        const overlapMs = overlap * 1000;
-        const totalChunks = Math.floor(duration / (chunkMs - overlapMs)) + 1;
-
-        console.log(`Processing ${totalChunks} chunks...`);
-
-        const results: ChunkResult[] = [];
-        let totalTranscriptionTime = 0;
-
-        for (let i = 0; i < totalChunks; i++) {
-            const start = i * (chunkMs - overlapMs);
-            const end = Math.min(start + chunkMs, duration);
-
-            console.log(`\nProcessing chunk ${i + 1}/${totalChunks}`);
-            console.log(`Time range: ${(start / 1000).toFixed(1)}s - ${(end / 1000).toFixed(1)}s`);
-
-            const chunk = audio.slice(start, end);
-            const [result, chunkTime] = await transcribeSingleChunk(client, chunk, i + 1, totalChunks);
-            totalTranscriptionTime += chunkTime;
-            results.push({ result, startTime: start });
-        }
-
-        const finalResult = mergeTranscripts(results);
-        saveResults(finalResult, audioPath);
-
-        console.log(`\nTotal Groq API transcription time: ${totalTranscriptionTime.toFixed(2)}s`);
-
-        return finalResult;
-    } finally {
-        if (processedPath && fs.existsSync(processedPath)) {
-            fs.unlinkSync(processedPath);
-        }
-    }
-}
-
-// Export the main function
-export { transcribeAudioInChunks }; 

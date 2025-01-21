@@ -16,7 +16,7 @@ export interface AudioChunk {
   duration: number;
 }
 
-export const splitAudio = async (filename: string, chunkSize: number): Promise<AudioChunk[]> => {
+export const splitAudio = async (filename: string, chunkSize: number, chunkOverlapTime: number): Promise<AudioChunk[]> => {
   // Get duration of processed audio file
   const duration = await getDuration(filename);
   console.log(`Audio duration: ${duration} seconds`);
@@ -39,7 +39,7 @@ export const splitAudio = async (filename: string, chunkSize: number): Promise<A
   fs.mkdirSync(chunkDir, { recursive: true });
 
   // Calculate chunk parameters with 5 second overlap
-  const OVERLAP_SECONDS = 5;
+  const OVERLAP_SECONDS = chunkOverlapTime;
   const chunkDuration = chunkSeconds; // Duration per chunk from previous calculation
   const chunks: AudioChunk[] = [];
 
