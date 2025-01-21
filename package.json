@@ -91,6 +91,20 @@
           "required": false,
           "dataProxy": "speech_recognize_providers|azure_voices",
           "default": "en-US"
+        },
+        {
+          "name": "modelName",
+          "title": "Model Name",
+          "description": "The model name to use for speech recognition",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Microsoft Azure",
+              "value": "azure/azure"
+            }
+          ],
+          "default": "azure/azure"
         }
       ]
     },
@@ -156,44 +170,6 @@
           "required": true,
           "default": "",
           "defaultProxy": "KEY_ASSEMBLY_AI_APIKEY",
-          "placeholder": "********"
-        }
-      ]
-    },
-    {
-      "name": "youdao",
-      "title": "Youdao",
-      "description": "Youdao Speech-to-Text Provider that allows you to use Youdao's online Speech-to-Text service",
-      "icon": "youdao.png",
-      "mode": "provider",
-      "preferences": [
-        {
-          "name": "speechRecognitionLanguage",
-          "title": "Language",
-          "description": "The Language .",
-          "type": "dropdown",
-          "required": false,
-          "dataProxy": "speech_recognize_providers|youdao_languages",
-          "default": "zh-CHS"
-        },
-        {
-          "name": "youdao_api_key",
-          "title": "API Key",
-          "description": "youdao_api_key",
-          "type": "password",
-          "required": true,
-          "default": "",
-          "defaultProxy": "KEY_YOUDAO_SPEECH_APIKEY",
-          "placeholder": "********"
-        },
-        {
-          "name": "youdao_api_secret",
-          "title": "API Secret",
-          "description": "youdao_api_secret",
-          "type": "password",
-          "required": true,
-          "default": "",
-          "defaultProxy": "KEY_YOUDAO_SPEECH_API_SECRET",
           "placeholder": "********"
         }
       ]
