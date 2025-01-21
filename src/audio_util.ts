@@ -19,26 +19,33 @@ export interface AudioChunk {
 /**
  * Preprocess audio file to 16kHz mono FLAC using ffmpeg
  */
-export function preprocessAudio(inputPath: string): string {
+export function preprocessAudio(inputPath: string, targetFormat: 'flac' | 'wav' | 'unknown' = "unknown"): string {
 
   if (!fs.existsSync(inputPath)) {
     throw new Error(`Input file not found: ${inputPath}`);
   }
 
   // If input is already a FLAC file, return it directly
-  if (path.extname(inputPath).toLowerCase() === '.flac' || path.extname(inputPath).toLowerCase() === '.mp3') {
-    // copy file
-    // const outputPath = path.join(CommandUtil.cachePath(), `${path.basename(inputPath)}`);
-    // fs.copyFileSync(inputPath, outputPath);
+  // Check if input is a common audio format
+  const ext = path.extname(inputPath).toLowerCase()
+  if (['.flac', '.mp3', '.wav'].includes(ext) && targetFormat === "unknown") {
     return inputPath;
   }
 
+  if (ext === `.${targetFormat}`) {
+    return inputPath;
+  }
+  if (targetFormat === "unknown") {
+    targetFormat = 'flac'
+  }
+
   // Get the directory of the input file and create output path in same directory
-  const outputPath = path.join(path.dirname(inputPath), `${path.basename(inputPath).split(".")[0]}.flac`);
+  const outputPath = path.join(path.dirname(inputPath), `${path.basename(inputPath).split(".")[0]}.${targetFormat}`);
 
   console.log("Converting audio to 16kHz mono FLAC...");
   try {
-    execSync(`ffmpeg -hide_banner -loglevel error -i "${inputPath}" -ar 16000 -ac 1 -c:a flac -y "${outputPath}"`);
+    let encoder = targetFormat === "wav" ? "pcm_s16le" : "flac"
+    execSync(`ffmpeg -hide_banner -loglevel error -i "${inputPath}" -ar 16000 -ac 1 -c:a ${encoder} -y "${outputPath}"`);
     return outputPath;
   } catch (e: any) {
     throw new Error(`FFmpeg conversion failed: ${e.message}`);
