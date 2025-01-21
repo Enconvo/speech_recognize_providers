@@ -1,9 +1,8 @@
-import { promisify } from 'util';
-const exec = promisify(require('child_process').exec);
-import fs from 'fs-extra';
 import { parseFile } from 'music-metadata';
+import * as fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import { uuid } from '@enconvo/api';
 
 export const getDuration = async (filePath: string): Promise<number> => {
   const metadata = await parseFile(filePath);
@@ -35,7 +34,7 @@ export const splitAudio = async (filename: string, chunkSize: number, chunkOverl
 
 
   // Create directory for audio chunks
-  const chunkDir = path.join(path.dirname(filename), 'audio_chunks');
+  const chunkDir = path.join(path.dirname(filename), uuid());
   fs.mkdirSync(chunkDir, { recursive: true });
 
   // Calculate chunk parameters with 5 second overlap
@@ -55,7 +54,7 @@ export const splitAudio = async (filename: string, chunkSize: number, chunkOverl
     // Don't use -c copy for splitting as it can cause duration issues
     // Instead re-encode with same codec to ensure accurate splitting
     const ffmpegCommand =
-      `ffmpeg -hide_banner -loglevel error -i "${filename}" -ss ${startTime} -t ${duration} -c:a flac "${chunkPath}"`;
+      `ffmpeg -hide_banner -loglevel error -i "${filename}" -ss ${startTime} -t ${duration}  "${chunkPath}"`;
 
     try {
       execSync(ffmpegCommand);

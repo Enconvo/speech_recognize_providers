@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.100",
+  "version": "0.0.101",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -13,12 +13,68 @@
   "type": "module",
   "commands": [
     {
-      "name": "speech_to_text",
-      "title": "Speech-to-Text",
-      "description": "Enconvo Speech-to-Text Provider that allows you to use high speed online Speech-to-Text service",
-      "icon": "enconvo.png",
+      "name": "transcribe",
+      "title": "Transcribe",
+      "description": "Transcribe audio/video files",
+      "icon": "transcribe.png",
       "mode": "no-view",
-      "preferences": []
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "context_files": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "The file path to be processed"
+            },
+            "description": "The files to be processed"
+          },
+          "audio_files": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "The file path to be processed, support audio / video file"
+            },
+            "description": "The audio files to be processed, support audio / video files"
+          },
+          "output_format": {
+            "type": "string",
+            "description": "The format for the transcription output",
+            "enum": [
+              "text",
+              "txt"
+            ],
+            "default": "text"
+          },
+          "output_dir": {
+            "type": "string",
+            "description": "The output directory"
+          }
+        },
+        "required": [
+          "audio_files"
+        ]
+      },
+      "preferences": [
+        {
+          "name": "output_format",
+          "title": "Output Format",
+          "description": "Choose the format for the transcription output",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Plain Text",
+              "value": "text"
+            },
+            {
+              "title": "TXT File",
+              "value": "txt"
+            }
+          ],
+          "default": "text"
+        }
+      ]
     },
     {
       "name": "enconvo",
@@ -206,240 +262,11 @@
         {
           "name": "speechRecognitionLanguage",
           "title": "Language",
-          "description": "The Language .",
+          "description": "Specify the language for transcription. We highly recommend setting the language if you know it as specifying a language may improve transcription accuracy and speed.",
           "type": "dropdown",
           "required": false,
-          "data": [
-            {
-              "title": "Afrikaans",
-              "value": "af"
-            },
-            {
-              "title": "اَلْعَرَبِيَّةُ",
-              "value": "ar"
-            },
-            {
-              "title": "Հայերեն",
-              "value": "hy"
-            },
-            {
-              "title": "Azərbaycan dili",
-              "value": "az"
-            },
-            {
-              "title": "Беларуская мова",
-              "value": "be"
-            },
-            {
-              "title": "Bosanski",
-              "value": "bs"
-            },
-            {
-              "title": "Български",
-              "value": "bg"
-            },
-            {
-              "title": "Català",
-              "value": "ca"
-            },
-            {
-              "title": "中文",
-              "value": "zh"
-            },
-            {
-              "title": "Hrvatski",
-              "value": "hr"
-            },
-            {
-              "title": "Čeština",
-              "value": "cs"
-            },
-            {
-              "title": "Dansk",
-              "value": "da"
-            },
-            {
-              "title": "Nederlands",
-              "value": "nl"
-            },
-            {
-              "title": "English",
-              "value": "en"
-            },
-            {
-              "title": "Eesti keel",
-              "value": "et"
-            },
-            {
-              "title": "Suomi",
-              "value": "fi"
-            },
-            {
-              "title": "Français",
-              "value": "fr"
-            },
-            {
-              "title": "Galego",
-              "value": "gl"
-            },
-            {
-              "title": "Deutsch",
-              "value": "de"
-            },
-            {
-              "title": "Ελληνικά",
-              "value": "el"
-            },
-            {
-              "title": "עברית",
-              "value": "he"
-            },
-            {
-              "title": "हिन्दी",
-              "value": "hi"
-            },
-            {
-              "title": "Magyar",
-              "value": "hu"
-            },
-            {
-              "title": "Íslenska",
-              "value": "is"
-            },
-            {
-              "title": "Bahasa Indonesia",
-              "value": "id"
-            },
-            {
-              "title": "Italiano",
-              "value": "it"
-            },
-            {
-              "title": "日本語",
-              "value": "ja"
-            },
-            {
-              "title": "ಕನ್ನಡ",
-              "value": "kn"
-            },
-            {
-              "title": "Қазақша",
-              "value": "kk"
-            },
-            {
-              "title": "한국어",
-              "value": "ko"
-            },
-            {
-              "title": "Latviešu",
-              "value": "lv"
-            },
-            {
-              "title": "Lietuvių",
-              "value": "lt"
-            },
-            {
-              "title": "Македонски",
-              "value": "mk"
-            },
-            {
-              "title": "Bahasa Melayu",
-              "value": "ms"
-            },
-            {
-              "title": "मराठी",
-              "value": "mr"
-            },
-            {
-              "title": "Māori",
-              "value": "mi"
-            },
-            {
-              "title": "नेपाली",
-              "value": "ne"
-            },
-            {
-              "title": "Norsk",
-              "value": "no"
-            },
-            {
-              "title": "فارسی",
-              "value": "fa"
-            },
-            {
-              "title": "Polski",
-              "value": "pl"
-            },
-            {
-              "title": "Português",
-              "value": "pt"
-            },
-            {
-              "title": "Română",
-              "value": "ro"
-            },
-            {
-              "title": "Русский",
-              "value": "ru"
-            },
-            {
-              "title": "Српски",
-              "value": "sr"
-            },
-            {
-              "title": "Slovenčina",
-              "value": "sk"
-            },
-            {
-              "title": "Slovenščina",
-              "value": "sl"
-            },
-            {
-              "title": "Español",
-              "value": "es"
-            },
-            {
-              "title": "Kiswahili",
-              "value": "sw"
-            },
-            {
-              "title": "Svenska",
-              "value": "sv"
-            },
-            {
-              "title": "Tagalog",
-              "value": "tl"
-            },
-            {
-              "title": "தமிழ்",
-              "value": "ta"
-            },
-            {
-              "title": "ไทย",
-              "value": "th"
-            },
-            {
-              "title": "Türkçe",
-              "value": "tr"
-            },
-            {
-              "title": "Українська",
-              "value": "uk"
-            },
-            {
-              "title": "اردو",
-              "value": "ur"
-            },
-            {
-              "title": "Tiếng Việt",
-              "value": "vi"
-            },
-            {
-              "title": "Cymraeg",
-              "value": "cy"
-            }
-          ],
-          "default": "en"
+          "default": "en",
+          "dataProxy": "translate|languages"
         },
         {
           "name": "apiKey",
@@ -452,9 +279,16 @@
           "placeholder": "gsk-********"
         },
         {
+          "name": "prompt",
+          "title": "Prompt",
+          "description": "Provide context or specify how to spell unfamiliar words (limited to 224 tokens).",
+          "type": "textfield",
+          "default": ""
+        },
+        {
           "name": "modelName",
           "title": "ModelName",
-          "description": "Speech-to-text Model",
+          "description": "Speech-to-text Model [more...](https://docs.groq.com/docs/speech-to-text/models)",
           "type": "dropdown",
           "required": false,
           "data": [
@@ -536,10 +370,8 @@
     }
   ],
   "dependencies": {
-    "@enconvo/api": "^0.1.161",
-    "audio-slicer": "^1.8.0",
+    "@enconvo/api": "link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api",
     "axios": "^1.7.9",
-    "ffmpeg-static": "^5.2.0",
     "fs-extra": "^11.3.0",
     "groq-sdk": "^0.12.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.42.0",
