@@ -45,6 +45,7 @@ export class EnconvoProvider extends SpeechToTextProvider {
         audioFilePath: string
     ): Promise<AzureTranscriptionResponse | undefined> {
         // 构建请求URL
+        // const url = `http://localhost:8181/v1/stt`;
         const url = `https://api.enconvo.com/v1/stt`;
 
         // 创建 FormData 实例
