@@ -22,7 +22,7 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
     }
 
 
-    protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
+    protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult > {
         const inputPath = params.audioFilePath.replace("file://", "")
         const filePath = preprocessAudio(inputPath)
 
@@ -35,7 +35,13 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
             },
         );
 
-        if (error) throw error;
+        if (error) {
+            console.error("error-", error)
+            return {
+                path: params.audioFilePath,
+                text: `${JSON.stringify(error)}`
+            }
+        }
         if (!error) console.dir(transcriptionResult, { depth: null });
 
         if (transcriptionResult) {

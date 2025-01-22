@@ -23,27 +23,7 @@ export class EnconvoProvider extends SpeechToTextProvider {
         const filePath = preprocessAudio(inputPath, "wav")
         console.log("filePath-", filePath)
 
-        const transcription = await this.transcribeAudio(filePath)
-        let text = ""
-        if (transcription) {
-            text = transcription.combinedPhrases.map(phrase => phrase.text).join(" ")
-        }
-        // clean up
-        if (filePath !== inputPath) {
-            fs.unlinkSync(filePath)
-        }
-        const result: SpeechToTextProvider.SpeechToTextResult = {
-            path: params.audioFilePath,
-            text: text
-        }
 
-        return result
-    }
-
-
-    async transcribeAudio(
-        audioFilePath: string
-    ): Promise<AzureTranscriptionResponse | undefined> {
         // 构建请求URL
         // const url = `http://localhost:8181/v1/stt`;
         const url = `https://api.enconvo.com/v1/stt`;
@@ -52,12 +32,14 @@ export class EnconvoProvider extends SpeechToTextProvider {
         const formData = new FormData();
 
         // 添加音频文件
-        formData.append('audio', fs.createReadStream(audioFilePath));
+        formData.append('audio', fs.createReadStream(filePath));
 
         // 添加 definition
         formData.append('definition', JSON.stringify({
             locales: [this.options.speechRecognitionLanguage.value]
         }));
+
+        let text = ""
 
         try {
             // 发送请求
@@ -70,15 +52,26 @@ export class EnconvoProvider extends SpeechToTextProvider {
                 },
             });
 
-            return response.data as AzureTranscriptionResponse;
+            text = (response.data as AzureTranscriptionResponse).combinedPhrases.map(phrase => phrase.text).join(" ")
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.error('API Error:', error.response?.data || error.message);
             } else {
                 console.error('Error:', error);
             }
-            return undefined
+            text = JSON.stringify(error)
         }
+
+        // clean up
+        if (filePath !== inputPath) {
+            fs.unlinkSync(filePath)
+        }
+        const result: SpeechToTextProvider.SpeechToTextResult = {
+            path: params.audioFilePath,
+            text: text
+        }
+
+        return result
     }
 
 }
