@@ -205,6 +205,48 @@
       ]
     },
     {
+      "name": "elevenlab",
+      "title": "ElevenLabs (Scribe)",
+      "description": "ElevenLabs Speech-to-Text Provider that allows you to use [ElevenLabs](https://elevenlabs.io/)'s online Speech-to-Text service",
+      "icon": "elevenlabs.png",
+      "mode": "provider",
+      "preferences": [
+        {
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "Specify the language for transcription. We highly recommend setting the language if you know it as specifying a language may improve transcription accuracy and speed.",
+          "type": "dropdown",
+          "required": false,
+          "default": "auto",
+          "dataProxy": "translate|languages"
+        },
+        {
+          "name": "apiKey",
+          "title": "ElevenLabs API Key",
+          "description": "ElevenLabs API Key",
+          "type": "password",
+          "required": true,
+          "default": "",
+          "defaultProxy": "KEY_ELEVENLABS_APIKEY",
+          "placeholder": "********"
+        },
+        {
+          "name": "modelName",
+          "title": "ModelName",
+          "description": "Speech-to-text Model",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Scribe v1",
+              "value": "scribe_v1"
+            }
+          ],
+          "default": "scribe_v1"
+        }
+      ]
+    },
+    {
       "name": "whisperOffline",
       "title": "Local Whisper (Beta)",
       "description": "Local Whisper Speech-to-Text Provider that runs on your local machine",
@@ -278,6 +320,7 @@
     "@enconvo/api": "link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api",
     "assemblyai": "^4.8.0",
     "axios": "^1.7.9",
+    "elevenlabs": "^1.52.0",
     "form-data": "^4.0.1",
     "fs-extra": "^11.3.0",
     "groq-sdk": "^0.12.0",

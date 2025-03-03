@@ -20,6 +20,7 @@ export class EnconvoProvider extends SpeechToTextProvider {
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
         const inputPath = params.audioFilePath.replace("file://", "")
 
+        console.log("inputPath-", inputPath)
         const filePath = preprocessAudio(inputPath, "wav")
         console.log("filePath-", filePath)
 

@@ -29,5 +29,5 @@
     "resolveJsonModule": true
   },
   "exclude": ["node_modules/", "dist/", "tests/"],
-  "include": ["src/**/*", "src/whisperOffline.ts"],
+  "include": ["src/**/*", "src/whisperOffline.ts", "src/elevenlabs.ts"],
 }
