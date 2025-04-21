@@ -1,21 +1,34 @@
 import { SpeechToTextProvider } from "@enconvo/api";
-import Groq from "groq-sdk";
-import { AudioChunk, mergeTranscriptionResults, preHandleAudio, preprocessAudio, splitAudio } from "./audio_util.ts";
+import { AudioChunk, mergeTranscriptionResults, splitAudio } from "./audio_util.ts";
 import fs from "fs"
 import path from "path"
+import OpenAI from "openai";
+import { env } from "process";
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
-    return new GroqProvider(options)
+    return new EnconvoCloudPlanProvider(options)
 }
 
-export class GroqProvider extends SpeechToTextProvider {
+export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
 
-    private client: Groq
+    private openai: OpenAI
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
-        console.log("options-", options)
-        this.client = new Groq({ apiKey: options.apiKey })
+
+        const baseUrl = "http://127.0.0.1:8181/v1"
+        // const baseUrl = "https://api.enconvo.com/v1"
+
+        this.openai = new OpenAI({
+            apiKey: "default",
+            baseURL: baseUrl,
+            defaultHeaders: {
+                "accessToken": `${env['accessToken']}`,
+                "client_id": `${env['client_id']}`,
+                "commandKey": `${env['commandKey']}`,
+                "commandTitle": `${env['commandTitle']}`,
+            }
+        })
     }
 
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
@@ -23,10 +36,7 @@ export class GroqProvider extends SpeechToTextProvider {
 
         const chunkSize = 24 * 1024 * 1024
         const chunkOverlapTime = 5 // seconds
-        const processedPath = preHandleAudio({
-            inputPath,
-            supportedFormats: [".mp3", ".wav"]
-        })
+        const processedPath = inputPath
         console.log("processedPath", processedPath)
 
         const chunks = await splitAudio(processedPath, chunkSize, chunkOverlapTime)
@@ -49,10 +59,9 @@ export class GroqProvider extends SpeechToTextProvider {
 
 
 
-
     /**
- * Transcribe a single audio chunk with Groq API
- */
+     * Transcribe a single audio chunk with OpenAI API
+     */
     async transcribeChunks(
         chunks: AudioChunk[],
         options: SpeechToTextProvider.SpeechToTextOptions
@@ -72,12 +81,14 @@ export class GroqProvider extends SpeechToTextProvider {
                 while (retryCount < MAX_RETRIES) {
                     const startTime = Date.now();
                     try {
+                        const language = options.speechRecognitionLanguage.value === 'auto' ? undefined : options.speechRecognitionLanguage.value
                         // Attempt transcription
-                        const result = await this.client.audio.transcriptions.create({
+                        const result = await this.openai.audio.transcriptions.create({
                             file: fs.createReadStream(tempFile),
-                            model: options.modelName.value || "whisper-large-v3-turbo",
-                            response_format: "verbose_json",
-                            prompt: options.prompt || ""
+                            model: options.modelName.value,
+                            response_format: "json",
+                            prompt: options.prompt,
+                            language: language
                         });
 
                         // Calculate and log processing time
@@ -123,7 +134,8 @@ export class GroqProvider extends SpeechToTextProvider {
         console.log(" total api time: ", totalApiTime)
         return results
     }
-
 }
+
+
 
 

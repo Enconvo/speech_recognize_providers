@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.103",
+  "version": "0.0.105",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -13,8 +13,63 @@
   "type": "module",
   "commands": [
     {
-      "name": "enconvo",
+      "name": "enconvo_cloud_plan",
       "title": "Enconvo Cloud Plan",
+      "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
+      "icon": "enconvo.png",
+      "mode": "provider",
+      "preferences": [
+        {
+          "name": "prompt",
+          "title": "Prompt",
+          "description": "Provide context or specify how to spell unfamiliar words (limited to 224 tokens).",
+          "type": "textfield",
+          "default": ""
+        },
+        {
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "Specify the language for transcription. We highly recommend setting the language if you know it as specifying a language may improve transcription accuracy and speed.",
+          "type": "dropdown",
+          "required": false,
+          "default": "en",
+          "dataProxy": "translate|languages"
+        },
+        {
+          "name": "modelName",
+          "title": "ModelName",
+          "description": "Speech-to-text Model [more...](https://docs.groq.com/docs/speech-to-text/models)",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Whisper Large V3 Turbo (100 points per time)",
+              "value": "groq/whisper-large-v3-turbo"
+            },
+            {
+              "title": "whisper-large-v3 (200 points per time)",
+              "value": "groq/whisper-large-v3"
+            },
+            {
+              "title": "Distil-Whisper English (100 points per time)",
+              "value": "groq/distil-whisper-large-v3-en"
+            },
+            {
+              "title": "OpenAI gpt-4o-mini-transcribe (100 points per time)",
+              "value": "openai/gpt-4o-mini-transcribe"
+            },
+            {
+              "title": "OpenAI gpt-4o-transcribe (200 points per time)",
+              "value": "openai/gpt-4o-transcribe"
+            }
+          ],
+          "default": "groq/whisper-large-v3-turbo"
+        }
+      ]
+    },
+    {
+      "name": "enconvo",
+      "title": "Microsoft (Enconvo Cloud Plan)",
       "description": "Enconvo Speech-to-Text Provider that allows you to use high speed online Speech-to-Text service",
       "icon": "enconvo.png",
       "mode": "provider",
@@ -96,7 +151,7 @@
           "type": "dropdown",
           "required": false,
           "dataProxy": "speech_recognize_providers|assemblyai_languages",
-          "default": "auto"
+          "default": "en_us"
         },
         {
           "name": "api_key",
@@ -149,7 +204,7 @@
     },
     {
       "name": "groq",
-      "title": "Groq Whisper (Beta)",
+      "title": "Groq Whisper",
       "description": "Groq Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
       "icon": "groq.png",
       "mode": "provider",
@@ -326,7 +381,7 @@
     "groq-sdk": "^0.12.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.42.0",
     "music-metadata": "^10.7.0",
-    "openai": "^4.77.0"
+    "openai": "^4.95.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -1,21 +1,25 @@
 import { SpeechToTextProvider } from "@enconvo/api";
-import Groq from "groq-sdk";
-import { AudioChunk, mergeTranscriptionResults, preHandleAudio, preprocessAudio, splitAudio } from "./audio_util.ts";
+import { AudioChunk, mergeTranscriptionResults, splitAudio } from "./audio_util.ts";
 import fs from "fs"
 import path from "path"
+import OpenAI from "openai";
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
-    return new GroqProvider(options)
+    return new OpenaiProvider(options)
 }
 
-export class GroqProvider extends SpeechToTextProvider {
+export class OpenaiProvider extends SpeechToTextProvider {
 
-    private client: Groq
+    private openai: OpenAI
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
-        console.log("options-", options)
-        this.client = new Groq({ apiKey: options.apiKey })
+        this.openai = new OpenAI({
+            apiKey: options.apiKey,
+            baseURL: options.baseUrl
+        })
+
+
     }
 
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
@@ -23,10 +27,7 @@ export class GroqProvider extends SpeechToTextProvider {
 
         const chunkSize = 24 * 1024 * 1024
         const chunkOverlapTime = 5 // seconds
-        const processedPath = preHandleAudio({
-            inputPath,
-            supportedFormats: [".mp3", ".wav"]
-        })
+        const processedPath = inputPath
         console.log("processedPath", processedPath)
 
         const chunks = await splitAudio(processedPath, chunkSize, chunkOverlapTime)
@@ -49,10 +50,9 @@ export class GroqProvider extends SpeechToTextProvider {
 
 
 
-
     /**
- * Transcribe a single audio chunk with Groq API
- */
+     * Transcribe a single audio chunk with OpenAI API
+     */
     async transcribeChunks(
         chunks: AudioChunk[],
         options: SpeechToTextProvider.SpeechToTextOptions
@@ -73,11 +73,11 @@ export class GroqProvider extends SpeechToTextProvider {
                     const startTime = Date.now();
                     try {
                         // Attempt transcription
-                        const result = await this.client.audio.transcriptions.create({
+                        const result = await this.openai.audio.transcriptions.create({
                             file: fs.createReadStream(tempFile),
-                            model: options.modelName.value || "whisper-large-v3-turbo",
-                            response_format: "verbose_json",
-                            prompt: options.prompt || ""
+                            model: options.modelName.value,
+                            response_format: "json",
+                            prompt: options.prompt
                         });
 
                         // Calculate and log processing time
@@ -123,7 +123,75 @@ export class GroqProvider extends SpeechToTextProvider {
         console.log(" total api time: ", totalApiTime)
         return results
     }
-
 }
 
 
+
+
+
+/**
+ *     
+ {
+      "name": "openai_provider",
+      "title": "OpenAI",
+      "description": "Enconvo Speech-to-Text Provider that allows you to use high speed online Speech-to-Text service, powered by OpenAI",
+      "icon": "openai.png",
+      "mode": "provider",
+      "preferences": [
+        {
+          "name": "apiKey",
+          "description": "OpenAI api key",
+          "type": "password",
+          "required": false,
+          "title": "OpenAI Api Key",
+          "default": "",
+          "defaultProxy": "KEY_OPENAI_APIKEY",
+          "placeholder": "sk-********"
+        },
+        {
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "The Language .",
+          "type": "dropdown",
+          "required": false,
+          "dataProxy": "speech_recognize_providers|azure_voices",
+          "default": "en-US"
+        },
+        {
+          "name": "modelName",
+          "title": "Model Name",
+          "description": "The model name to use for speech recognition",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "gpt-4o-mini-transcribe",
+              "value": "gpt-4o-mini-transcribe"
+            },
+            {
+              "title": "gpt-4o-transcribe",
+              "value": "gpt-4o-transcribe"
+            }
+          ],
+          "default": "gpt-4o-mini-transcribe"
+        },
+        {
+          "name": "prompt",
+          "title": "Prompt",
+          "description": "Provide context or specify how to spell unfamiliar words (limited to 224 tokens).",
+          "type": "textfield",
+          "default": ""
+        },
+        {
+          "name": "baseUrl",
+          "description": "OpenAI api base url",
+          "type": "textfield",
+          "required": false,
+          "title": "OpenAI Api Base Url",
+          "defaultProxy": "KEY_OPENAI_BASEURL",
+          "default": "https://api.openai.com/v1",
+          "placeholder": "OpenAI Api Base Url"
+        }
+      ]
+    },
+ */
