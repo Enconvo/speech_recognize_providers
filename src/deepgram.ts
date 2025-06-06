@@ -15,14 +15,14 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
         super(options)
         console.log("options-", options)
         // The API key we created in step 3
-        const deepgramApiKey = options.deepgram_token;
+        const credentials = this.options.credentials
+        const deepgramApiKey = credentials.deepgram_token;
 
-        // Initializes the Deepgram SDK
         this.client = createClient(deepgramApiKey);
     }
 
 
-    protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult > {
+    protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
         const inputPath = params.audioFilePath.replace("file://", "")
         const filePath = preprocessAudio(inputPath)
 

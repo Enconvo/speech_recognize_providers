@@ -15,7 +15,8 @@ export class GroqProvider extends SpeechToTextProvider {
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
         console.log("options-", options)
-        this.client = new Groq({ apiKey: options.apiKey })
+        const credentials = this.options.credentials
+        this.client = new Groq({ apiKey: credentials.apiKey })
     }
 
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {

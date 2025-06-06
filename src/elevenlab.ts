@@ -16,7 +16,8 @@ export class ElevenlabsProvider extends SpeechToTextProvider {
     private client: ElevenLabsClient
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
-        this.client = new ElevenLabsClient({ apiKey: options.apiKey })
+        const credentials = this.options.credentials
+        this.client = new ElevenLabsClient({ apiKey: credentials.apiKey })
     }
 
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.105",
+  "version": "0.0.106",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -17,7 +17,8 @@
       "title": "Enconvo Cloud Plan",
       "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
       "icon": "enconvo.png",
-      "mode": "provider",
+      "mode": "no-view",
+      "commandType": "provider",
       "preferences": [
         {
           "name": "prompt",
@@ -32,7 +33,7 @@
           "description": "Specify the language for transcription. We highly recommend setting the language if you know it as specifying a language may improve transcription accuracy and speed.",
           "type": "dropdown",
           "required": false,
-          "default": "en",
+          "default": "auto",
           "dataProxy": "translate|languages"
         },
         {
@@ -72,7 +73,8 @@
       "title": "Microsoft (Enconvo Cloud Plan)",
       "description": "Enconvo Speech-to-Text Provider that allows you to use high speed online Speech-to-Text service",
       "icon": "enconvo.png",
-      "mode": "provider",
+      "mode": "no-view",
+      "commandType": "provider",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -104,8 +106,23 @@
       "title": "Microsoft",
       "description": "Microsoft Speech-to-Text Provider that allows you to use Microsoft Azure's online Speech-to-Text service",
       "icon": "azure.png",
-      "mode": "provider",
+      "mode": "no-view",
+      "commandType": "provider",
       "preferences": [
+        {
+          "name": "credentials",
+          "description": "The key management provider to use",
+          "type": "extension",
+          "required": false,
+          "default": "microsoft_speech",
+          "extensionType": "credentials-provider",
+          "extensionFilter": {
+            "targetCommands": [
+              "credentials|microsoft_speech"
+            ]
+          },
+          "title": "Credential Provider"
+        },
         {
           "name": "speechRecognitionLanguage",
           "title": "Language",
@@ -114,26 +131,6 @@
           "required": false,
           "dataProxy": "speech_recognize_providers|azure_voices",
           "default": "en-US"
-        },
-        {
-          "name": "region",
-          "title": "Resource Region",
-          "description": "The region of the resource.",
-          "type": "dropdown",
-          "required": true,
-          "default": "eastus",
-          "defaultProxy": "KEY_AZURE_SPEECH_REGION",
-          "dataProxy": "speech_recognize_providers|azure_speech_regions"
-        },
-        {
-          "name": "resource_key",
-          "title": "Resource Key",
-          "description": "How to get api key? [🔑here](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/overview)",
-          "type": "password",
-          "required": true,
-          "default": "",
-          "defaultProxy": "KEY_AZURE_SPEECH",
-          "placeholder": "********"
         }
       ]
     },
@@ -142,8 +139,23 @@
       "title": "Assembly AI",
       "description": "Assembly AI Speech-to-Text Provider that allows you to use Assembly AI's online Speech-to-Text service",
       "icon": "assemblyai.png",
-      "mode": "provider",
+      "mode": "no-view",
+      "commandType": "provider",
       "preferences": [
+        {
+          "name": "credentials",
+          "description": "The key management provider to use",
+          "type": "extension",
+          "required": false,
+          "default": "assembly_ai",
+          "extensionType": "credentials-provider",
+          "extensionFilter": {
+            "targetCommands": [
+              "credentials|assembly_ai"
+            ]
+          },
+          "title": "Credential Provider"
+        },
         {
           "name": "speechRecognitionLanguage",
           "title": "Language",
@@ -152,16 +164,6 @@
           "required": false,
           "dataProxy": "speech_recognize_providers|assemblyai_languages",
           "default": "en_us"
-        },
-        {
-          "name": "api_key",
-          "title": "API Key",
-          "description": "API Key , [🔑here](https://www.assemblyai.com/app/)",
-          "type": "password",
-          "required": true,
-          "default": "",
-          "defaultProxy": "KEY_ASSEMBLY_AI_APIKEY",
-          "placeholder": "********"
         }
       ]
     },
@@ -170,26 +172,22 @@
       "title": "Deepgram",
       "description": "Deepgram Speech-to-Text Provider that allows you to use Deepgram's online Speech-to-Text service",
       "icon": "deepgram.png",
-      "mode": "provider",
+      "mode": "no-view",
+      "commandType": "provider",
       "preferences": [
         {
-          "name": "speechRecognitionLanguage",
-          "title": "Language",
-          "description": "The Language .",
-          "type": "dropdown",
+          "name": "credentials",
+          "description": "The key management provider to use",
+          "type": "extension",
           "required": false,
-          "dataProxy": "speech_recognize_providers|deepgram_languages",
-          "default": "en"
-        },
-        {
-          "name": "deepgram_token",
-          "title": "Deepgram Token",
-          "description": "Deepgram Token",
-          "type": "password",
-          "required": true,
-          "default": "",
-          "defaultProxy": "KEY_DEEPGRAM_TOKEN",
-          "placeholder": "********"
+          "default": "deepgram",
+          "extensionType": "credentials-provider",
+          "extensionFilter": {
+            "targetCommands": [
+              "credentials|deepgram"
+            ]
+          },
+          "title": "Credential Provider"
         },
         {
           "name": "modelName",
@@ -199,6 +197,15 @@
           "required": false,
           "dataProxy": "speech_recognize_providers|deepgram_models",
           "default": "nova-2"
+        },
+        {
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "The Language .",
+          "type": "dropdown",
+          "required": false,
+          "dataProxy": "speech_recognize_providers|deepgram_languages",
+          "default": "en"
         }
       ]
     },
@@ -207,8 +214,23 @@
       "title": "Groq Whisper",
       "description": "Groq Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
       "icon": "groq.png",
-      "mode": "provider",
+      "mode": "no-view",
+      "commandType": "provider",
       "preferences": [
+        {
+          "name": "credentials",
+          "description": "The key management provider to use",
+          "type": "extension",
+          "required": false,
+          "default": "groq",
+          "extensionType": "credentials-provider",
+          "extensionFilter": {
+            "targetCommands": [
+              "credentials|groq"
+            ]
+          },
+          "title": "Credential Provider"
+        },
         {
           "name": "speechRecognitionLanguage",
           "title": "Language",
@@ -217,16 +239,6 @@
           "required": false,
           "default": "en",
           "dataProxy": "translate|languages"
-        },
-        {
-          "name": "apiKey",
-          "title": "Groq API Key",
-          "description": "Groq API Key",
-          "type": "password",
-          "required": true,
-          "default": "",
-          "defaultProxy": "KEY_GROQ_APIKEY",
-          "placeholder": "gsk-********"
         },
         {
           "name": "prompt",
@@ -264,8 +276,23 @@
       "title": "ElevenLabs (Scribe)",
       "description": "ElevenLabs Speech-to-Text Provider that allows you to use [ElevenLabs](https://elevenlabs.io/)'s online Speech-to-Text service",
       "icon": "elevenlabs.png",
-      "mode": "provider",
+      "mode": "no-view",
+      "commandType": "provider",
       "preferences": [
+        {
+          "name": "credentials",
+          "description": "The key management provider to use",
+          "type": "extension",
+          "required": false,
+          "default": "elevenlabs",
+          "extensionType": "credentials-provider",
+          "extensionFilter": {
+            "targetCommands": [
+              "credentials|elevenlabs"
+            ]
+          },
+          "title": "Credential Provider"
+        },
         {
           "name": "speechRecognitionLanguage",
           "title": "Language",
@@ -274,16 +301,6 @@
           "required": false,
           "default": "auto",
           "dataProxy": "translate|languages"
-        },
-        {
-          "name": "apiKey",
-          "title": "ElevenLabs API Key",
-          "description": "ElevenLabs API Key",
-          "type": "password",
-          "required": true,
-          "default": "",
-          "defaultProxy": "KEY_ELEVENLABS_APIKEY",
-          "placeholder": "********"
         },
         {
           "name": "modelName",
@@ -306,7 +323,8 @@
       "title": "Local Whisper (Beta)",
       "description": "Local Whisper Speech-to-Text Provider that runs on your local machine",
       "icon": "local_whisper.png",
-      "mode": "provider",
+      "mode": "no-view",
+      "commandType": "provider",
       "preferences": [
         {
           "name": "localWhisper",

@@ -16,7 +16,8 @@ export class AzureAIProvider extends SpeechToTextProvider {
     private speechConfig: sdk.SpeechConfig
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
-        this.speechConfig = sdk.SpeechConfig.fromSubscription(this.options.resource_key, this.options.region.value);
+        const credentials = this.options.credentials
+        this.speechConfig = sdk.SpeechConfig.fromSubscription(credentials.resource_key, credentials.region.value);
         this.speechConfig.speechRecognitionLanguage = this.options.speechRecognitionLanguage.value;
     }
 

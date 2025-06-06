@@ -14,9 +14,10 @@ export class OpenaiProvider extends SpeechToTextProvider {
     private openai: OpenAI
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
+        const credentials = this.options.credentials
         this.openai = new OpenAI({
-            apiKey: options.apiKey,
-            baseURL: options.baseUrl
+            apiKey: credentials.apiKey,
+            baseURL: credentials.baseUrl
         })
 
 

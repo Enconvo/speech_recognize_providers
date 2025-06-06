@@ -14,8 +14,9 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
         console.log("options-", options)
+        const credentials = this.options.credentials
         this.client = new AssemblyAI({
-            apiKey: options.api_key
+            apiKey: credentials.apiKey
         })
     }
 
