@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.106",
+  "version": "0.0.130",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -70,7 +70,7 @@
     },
     {
       "name": "enconvo",
-      "title": "Microsoft (Enconvo Cloud Plan)",
+      "title": "Microsoft (Enconvo Cloud Plan) Free",
       "description": "Enconvo Speech-to-Text Provider that allows you to use high speed online Speech-to-Text service",
       "icon": "enconvo.png",
       "mode": "no-view",
