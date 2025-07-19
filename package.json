@@ -115,8 +115,13 @@
           "description": "The Language .",
           "type": "dropdown",
           "required": false,
-          "dataProxy": "speech_recognize_providers|azure_voices",
-          "default": "en-US"
+          "default": "en",
+          "data": [
+            {
+              "title": "English",
+              "value": "en"
+            }
+          ]
         },
         {
           "name": "modelName",
@@ -126,11 +131,11 @@
           "required": false,
           "data": [
             {
-              "title": "Microsoft Azure",
-              "value": "azure/azure"
+              "title": "Parakeet TDT 0.6B V2 (En) MLX",
+              "value": "mlx-community/parakeet-tdt-0.6b-v2"
             }
           ],
-          "default": "azure/azure"
+          "default": "mlx-community/parakeet-tdt-0.6b-v2"
         }
       ]
     },
