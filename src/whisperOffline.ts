@@ -20,10 +20,11 @@ export class EnconvoProvider extends SpeechToTextProvider {
         const filePath = preprocessAudio(inputPath, "wav")
         console.log("filePath-", filePath)
 
+        console.time("whisperOffline")
         const transcription = await Commander.send(JsonRpcMethod.localWhisperTranscribeFile, { path: filePath })
         const data: { text: string } = transcription.data
         console.log("transcription-", data.text)
-
+        console.timeEnd("whisperOffline")
 
         let text = data.text
         // clean up

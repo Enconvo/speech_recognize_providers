@@ -105,9 +105,9 @@
       "name": "parakeet_mlx",
       "title": "Parakeet MLX",
       "description": "Parakeet MLX Speech-to-Text Provider that allows you to use Parakeet MLX",
-      "icon": "icon.png",
+      "icon": "nvidia.png",
       "mode": "no-view",
-      "commandType": "tool",
+      "commandType": "provider",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -424,6 +424,7 @@
   "dependencies": {
     "@deepgram/sdk": "^3.9.0",
     "@enconvo/api": "link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api",
+    "@modelcontextprotocol/sdk": "^1.16.0",
     "assemblyai": "^4.8.0",
     "axios": "^1.7.9",
     "elevenlabs": "^1.52.0",

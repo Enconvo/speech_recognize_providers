@@ -1,21 +1,21 @@
 from parakeet_mlx import from_pretrained
 from huggingface_hub import hf_hub_download, try_to_load_from_cache
-import json
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.responses import JSONResponse
+import socket
+from pathlib import Path
 import os
-import tempfile
 import logging
-import uvicorn
-from typing import Optional
+from mcp.server.fastmcp import FastMCP
+import json
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging to stderr (safe for STDIO-based MCP servers)
+logging.basicConfig(level=logging.INFO, stream=None)
 logger = logging.getLogger(__name__)
 
-# Initialize FastAPI app
-app = FastAPI(title="Speech-to-Text API",
-              description="STT service using Parakeet MLX", version="1.0.0")
+# Initialize FastMCP server
+mcp = FastMCP("speech-to-text")
+
+# Constants
+USER_AGENT = "speech-to-text-mcp/1.0"
 
 # Load the model globally to avoid reloading on each request
 model = None
@@ -25,150 +25,197 @@ def load_model():
     """Load the parakeet model"""
     global model
     if model is None:
+        send_message_to_app({
+            "type": "messages",
+            "messages": [
+                {
+                    "role": "assistant",
+                    "id": "123",
+                    "content": [{
+                            "id": "12323",
+                            "type": "loading_indicator",
+                            "text": "Loading parakeet model..."
+                    }]
+                }
+            ],
+            "action": "overwrite_last_message_last_content_of_type"
+        })
         logger.info("Loading parakeet model...")
         model = from_pretrained("mlx-community/parakeet-tdt-0.6b-v2")
         logger.info("Model loaded successfully")
     return model
 
 
-@app.on_event("startup")
-async def startup_event():
-    """Load model on startup"""
-    # load_model()
+def send_message_to_app(content: dict) -> None:
+    """Send message to app via socket connection.
 
+    Args:
+        output: Dictionary containing the message data to send
+    """
 
-@app.get("/download-model")
-def download_model(hf_model_id: str):
-    print("download_model", hf_model_id)
-    """Download the parakeet model to local directory if not exists"""
     try:
+        sock = create_socket_client()
+
+        callId = "speech_recognize_providers|parakeet_mlx"
+        requestId = "123"
+
+        output = {
+            "method": "responseStream",
+            "callId": callId,
+            "requestId": requestId,
+            "payloads": content,
+            "type": "request",
+            "needResult": False,
+            "extensionName": "speech_recognize_providers",
+            "commandName": "parakeet_mlx"
+        }
+
+        message = json.dumps(output) + "\n"
+        sock.send(message.encode('utf-8'))
+
+
+    except socket.timeout:
+        logger.error("Socket connection timeout")
+    except socket.error as e:
+        logger.error(f"Socket connection error: {e}")
+    except Exception as e:
+        logger.error(f"Failed to send message to app: {e}")
+    finally:
+        logger.info("Message sent to app finished")
+
+
+def create_socket_client():
+    """Create and return a socket client connection.
+
+    Returns:
+        socket.socket or None: Socket connection if successful, None otherwise
+    """
+
+    try:
+        # Get socket path from user's home directory
+        home_dir = Path.home()
+        socket_path = home_dir / ".config" / "enconvo" / ".macopilot.socket"
+
+        # Create Unix domain socket
+        app_socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        app_socket.settimeout(5)  # Set 5 second timeout
+
+        # Connect to socket
+        app_socket.connect(str(socket_path))
+        logger.info(f"Socket connected to {socket_path}")
+
+        return app_socket
+
+    except socket.timeout:
+        logger.error("Socket connection timeout")
+        return None
+    except socket.error as e:
+        logger.error(f"Socket connection error: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Socket creation failed: {e}")
+        return None
+
+
+@mcp.tool()
+async def download_model_tool(hf_model_id: str) -> str:
+    """Download the parakeet model to local directory if not exists.
+
+    Args:
+        hf_model_id: Hugging Face model ID to download
+
+    Returns:
+        Status message indicating success or failure
+    """
+    try:
+        # Download required model files
         hf_hub_download(hf_model_id, "config.json")
         hf_hub_download(hf_model_id, "model.safetensors")
         logger.info(f"Model downloaded successfully to {hf_model_id}")
-        return hf_model_id
+        return f"Model {hf_model_id} downloaded successfully"
 
     except Exception as e:
         logger.error(f"Error downloading model: {str(e)}")
-        raise e
+        return f"Failed to download model {hf_model_id}: {str(e)}"
 
 
-@app.get("/model-status")
-async def model_status(hf_model_id: str):
-    """
-    Check model status endpoint
+@mcp.tool()
+async def check_model_status(hf_model_id: str) -> str:
+    """Check if a model has been downloaded and is available.
+
+    Args:
+        hf_model_id: Hugging Face model ID to check
 
     Returns:
-        JSON response with model status information
+        Model status information
     """
     try:
-        # Check if model has been downloaded by checking if model files exist
+        # Check if model files exist in cache
         config_path = try_to_load_from_cache(hf_model_id, "config.json")
         model_path = try_to_load_from_cache(hf_model_id, "model.safetensors")
 
         model_exists = config_path is not None and model_path is not None
-        model_dir = hf_model_id if model_exists else None
 
-        logger.info(
-            f"Model status check - Downloaded: {model_exists}, Path: {model_dir}")
-
-        response = {
-            "model_loaded": model is not None,
-            "model_downloaded": model_exists,
-            "model_path": model_dir if model_exists else None,
-            "success": True
-        }
-
-        return JSONResponse(content=response)
+        return model_exists
 
     except Exception as e:
         logger.error(f"Error checking model status: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Failed to check model status: {str(e)}")
+        return f"Failed to check model status for {hf_model_id}: {str(e)}"
 
 
-@app.post("/stt")
-async def speech_to_text(request: dict):
-    """
-    Speech-to-text endpoint
+@mcp.tool()
+async def transcribe_audio(file_path: str) -> str:
+    """Transcribe an audio file to text using the speech-to-text model.
 
     Args:
         file_path: Path to the audio file to transcribe (supported formats: wav, mp3, etc.)
 
     Returns:
-        JSON response with transcription text
+        Transcribed text from the audio file
     """
     try:
-        file_path = request.get("file_path")
-        if not file_path:
-            raise HTTPException(
-                status_code=400, detail="file_path is required in request body")
         # Validate file exists
         if not os.path.exists(file_path):
-            raise HTTPException(status_code=404, detail="Audio file not found")
+            return f"Error: Audio file not found at path: {file_path}"
 
         # Get the loaded model
         current_model = load_model()
 
         # Transcribe the audio file
-        logger.info(f"Transcribing audio file: {file_path}")
         result = current_model.transcribe(file_path)
 
-        # Return the transcription result
-        response = {
-            "text": result.text,
-            "success": True,
-            "file_path": file_path
-        }
-
-        logger.info("Transcription completed successfully")
-        return JSONResponse(content=response)
+        return result.text
 
     except Exception as e:
         logger.error(f"Error during transcription: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail=f"Transcription failed: {str(e)}")
+        return f"Transcription failed for {file_path}: {str(e)}"
 
 
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "model_loaded": model is not None,
-        "service": "STT API"
-    }
+@mcp.tool()
+async def get_server_health() -> str:
+    """Get the health status of the speech-to-text server.
 
+    Returns:
+        Server health information including model status
+    """
+    try:
+        health_status = f"""
+Speech-to-Text Server Health:
+- Status: Healthy
+- Model loaded: {model is not None}
+- Service: STT MCP Server
+- Version: 1.0.0
+"""
+        return health_status
 
-@app.get("/")
-async def root():
-    """Root endpoint with API information"""
-    return {
-        "message": "Speech-to-Text API",
-        "version": "1.0.0",
-        "endpoints": {
-            "POST /stt": "Upload audio file for transcription",
-            "GET /health": "Health check",
-            "GET /docs": "API documentation"
-        }
-    }
+    except Exception as e:
+        logger.error(f"Error checking server health: {str(e)}")
+        return f"Health check failed: {str(e)}"
 
 
 def main():
-    """Main function to start the FastAPI server"""
-    # Get configuration from environment variables
-    port = int(os.environ.get('PORT', 8000))
-    host = os.environ.get('HOST', '0.0.0.0')
-
-    logger.info(f"Starting STT FastAPI server on {host}:{port}")
-
-    # Start the server using uvicorn
-    uvicorn.run(
-        app,
-        host=host,
-        port=port,
-        reload=False,
-        log_level="info"
-    )
+    logger.info("Starting STT MCP Server in STDIO mode")
+    mcp.run(transport='stdio')
 
 
 if __name__ == "__main__":
