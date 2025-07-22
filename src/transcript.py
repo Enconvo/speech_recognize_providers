@@ -1,5 +1,5 @@
 from parakeet_mlx import from_pretrained
-from huggingface_hub import hf_hub_download, try_to_load_from_cache
+from huggingface_hub import hf_hub_download, try_to_load_from_cache, snapshot_download
 import socket
 from pathlib import Path
 import os

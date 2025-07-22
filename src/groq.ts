@@ -28,9 +28,10 @@ export class GroqProvider extends SpeechToTextProvider {
             inputPath,
             supportedFormats: [".mp3", ".wav"]
         })
-        console.log("processedPath", processedPath)
 
         const chunks = await splitAudio(processedPath, chunkSize, chunkOverlapTime)
+
+        console.log("processedPath", processedPath)
         const transcribeResults = await this.transcribeChunks(chunks, this.options)
         // clean up
         if (inputPath !== processedPath) {

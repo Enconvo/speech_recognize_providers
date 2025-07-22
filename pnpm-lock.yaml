@@ -14,6 +14,9 @@ importers:
       '@enconvo/api':
         specifier: link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api
         version: link:../../enconvo.nodejs/enconvo_api
+      '@huggingface/hub':
+        specifier: ^2.4.0
+        version: 2.4.0
       '@modelcontextprotocol/sdk':
         specifier: ^1.16.0
         version: 1.16.0
@@ -248,6 +251,14 @@ packages:
   '@eslint/plugin-kit@0.2.4':
     resolution: {integrity: sha512-zSkKow6H5Kdm0ZUQUB2kV5JIXqoG0+uH5YADhaEHswm664N9Db8dXSi0nMJpacpMf+MyyglF1vnZohpEg5yUtg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@huggingface/hub@2.4.0':
+    resolution: {integrity: sha512-8H9uLOIBJNPw6lUV1g/t+7pAVNOhBW5g7CNAOJ0JVkA1QObEb7u0O7vMVkjmu3311SUU39aSx8l1Fgsw586g4g==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  '@huggingface/tasks@0.19.27':
+    resolution: {integrity: sha512-0UT2+SU5zWDrvlEcdVDrvUe2idNeblgBuS9AqDaDsaDV2KphmT5rvvYji6fDJCIUXFnoqg/TB4cn5b8yGXSr8w==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1678,6 +1689,12 @@ snapshots:
   '@eslint/plugin-kit@0.2.4':
     dependencies:
       levn: 0.4.1
+
+  '@huggingface/hub@2.4.0':
+    dependencies:
+      '@huggingface/tasks': 0.19.27
+
+  '@huggingface/tasks@0.19.27': {}
 
   '@humanfs/core@0.19.1': {}
 

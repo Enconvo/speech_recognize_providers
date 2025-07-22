@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.130",
+  "version": "0.0.132",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -129,13 +129,11 @@
           "description": "The model name to use for speech recognition",
           "type": "dropdown",
           "required": false,
-          "data": [
-            {
-              "title": "Parakeet TDT 0.6B V2 (En) MLX",
-              "value": "mlx-community/parakeet-tdt-0.6b-v2"
-            }
-          ],
-          "default": "mlx-community/parakeet-tdt-0.6b-v2"
+          "default": "mlx-community/parakeet-tdt-0.6b-v2",
+          "dataProxy": "speech_recognize_providers|parakeet_models",
+          "dataProxyConfig": {
+            "needRefresh": false
+          }
         }
       ]
     },
@@ -424,11 +422,21 @@
       "commandType": "function_command",
       "showInCommandList": false,
       "mode": "no-view"
+    },
+    {
+      "name": "parakeet_models",
+      "title": "parakeet_models",
+      "description": "get parakeet_models list",
+      "icon": "icon.png",
+      "commandType": "function_command",
+      "showInCommandList": false,
+      "mode": "no-view"
     }
   ],
   "dependencies": {
     "@deepgram/sdk": "^3.9.0",
     "@enconvo/api": "link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api",
+    "@huggingface/hub": "^2.4.0",
     "@modelcontextprotocol/sdk": "^1.16.0",
     "assemblyai": "^4.8.0",
     "axios": "^1.7.9",
