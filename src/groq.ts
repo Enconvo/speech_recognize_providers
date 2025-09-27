@@ -74,6 +74,7 @@ export class GroqProvider extends SpeechToTextProvider {
                 while (retryCount < MAX_RETRIES) {
                     const startTime = Date.now();
                     try {
+                        console.log("params", options.prompt)
                         // Attempt transcription
                         const result = await this.client.audio.transcriptions.create({
                             file: fs.createReadStream(tempFile),

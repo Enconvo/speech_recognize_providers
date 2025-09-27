@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.132",
+  "version": "0.0.172",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -130,10 +130,7 @@
           "type": "dropdown",
           "required": false,
           "default": "mlx-community/parakeet-tdt-0.6b-v2",
-          "dataProxy": "speech_recognize_providers|parakeet_models",
-          "dataProxyConfig": {
-            "needRefresh": false
-          }
+          "dataProxy": "speech_recognize_providers|parakeet_models"
         }
       ]
     },

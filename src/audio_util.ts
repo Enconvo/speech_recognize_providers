@@ -63,22 +63,27 @@ export function preHandleAudio(params: {
  * Preprocess audio file to 16kHz mono FLAC using ffmpeg
  */
 export function preprocessAudio(inputPath: string, targetFormat: 'flac' | 'wav' | 'unknown' = "unknown"): string {
+  inputPath = decodeURIComponent(inputPath)
 
   if (!fs.existsSync(inputPath)) {
+    console.log("inputPath-44444", inputPath)
     throw new Error(`Input file not found: ${inputPath}`);
   }
 
   // If input is already a FLAC file, return it directly
   // Check if input is a common audio format
   const ext = path.extname(inputPath).toLowerCase()
+  console.log("ext-", ext)
   if (['.flac', '.mp3', '.wav'].includes(ext) && targetFormat === "unknown") {
     return inputPath;
   }
 
   if (ext === `.${targetFormat}`) {
+    console.log("ext-22222", ext)
     return inputPath;
   }
   if (targetFormat === "unknown") {
+    console.log("targetFormat-33333", targetFormat)
     targetFormat = 'flac'
   }
 
