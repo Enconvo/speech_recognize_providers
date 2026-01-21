@@ -27,30 +27,72 @@ export namespace DiarizeUtils {
     }
 
     /**
-     * Find the best matching speaker for a segment based on time overlap
+     * Find the best matching speaker for a segment using multiple strategies:
+     * 1. First try overlap-based matching (weighted by overlap duration)
+     * 2. If no overlap found, use midpoint matching (find diarize segment containing midpoint)
+     * 3. If still no match, find the nearest diarize segment
      */
     export function findBestSpeaker(
         segment: SpeechToTextProvider.TranscriptSegment,
-        diarizeSegments: SpeechToTextProvider.TranscriptSegment[]
+        diarizeSegments: DiarizeSegment[]
     ): string | undefined {
+        if (!diarizeSegments || diarizeSegments.length === 0) {
+            return undefined;
+        }
+
+        // Strategy 1: Find segment with maximum overlap
         let bestSpeaker: string | undefined;
         let maxOverlap = 0;
 
         for (const diarize of diarizeSegments) {
-            // Calculate overlap between transcript segment and diarization segment
             const overlapStart = Math.max(segment.start, diarize.start);
             const overlapEnd = Math.min(segment.end, diarize.end);
             const overlap = Math.max(0, overlapEnd - overlapStart);
 
-            // Update best speaker if this has more overlap
             if (overlap > maxOverlap) {
                 maxOverlap = overlap;
                 bestSpeaker = diarize.speaker;
             }
         }
 
-        // Format speaker label before returning
-        return bestSpeaker ? formatSpeakerLabel(bestSpeaker) : undefined;
+        // If found overlap, return the speaker
+        if (bestSpeaker) {
+            return formatSpeakerLabel(bestSpeaker);
+        }
+
+        // Strategy 2: Use midpoint to find containing diarize segment
+        const midpoint = (segment.start + segment.end) / 2;
+        for (const diarize of diarizeSegments) {
+            if (midpoint >= diarize.start && midpoint <= diarize.end) {
+                return formatSpeakerLabel(diarize.speaker);
+            }
+        }
+
+        // Strategy 3: Find the nearest diarize segment
+        let minDistance = Infinity;
+        let nearestSpeaker: string | undefined;
+
+        for (const diarize of diarizeSegments) {
+            // Calculate distance from segment to diarize segment
+            let distance: number;
+            if (segment.end < diarize.start) {
+                // Segment is before diarize segment
+                distance = diarize.start - segment.end;
+            } else if (segment.start > diarize.end) {
+                // Segment is after diarize segment
+                distance = segment.start - diarize.end;
+            } else {
+                // Overlapping (should have been caught above, but just in case)
+                distance = 0;
+            }
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestSpeaker = diarize.speaker;
+            }
+        }
+
+        return nearestSpeaker ? formatSpeakerLabel(nearestSpeaker) : undefined;
     }
 
     /**
@@ -67,7 +109,7 @@ export namespace DiarizeUtils {
             return segments;
         }
 
-        if (segments.length === 0) {
+        if (!segments || segments.length === 0) {
             return [];
         }
 
