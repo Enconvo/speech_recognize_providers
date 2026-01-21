@@ -404,6 +404,15 @@
             }
           ],
           "default": "openai_whisper-small_216MB"
+        },
+        {
+          "name": "speechRecognitionLanguage",
+          "title": "Language",
+          "description": "Specify the language for transcription. We highly recommend setting the language if you know it as specifying a language may improve transcription accuracy and speed.",
+          "type": "dropdown",
+          "required": false,
+          "default": "auto",
+          "dataProxy": "speech_recognize_providers|whisper_languages"
         }
       ]
     },
@@ -411,6 +420,15 @@
       "name": "azure_voices",
       "title": "azure_voices",
       "description": "get azure_voices list",
+      "icon": "icon.png",
+      "commandType": "function_command",
+      "showInCommandList": false,
+      "mode": "no-view"
+    },
+    {
+      "name": "whisper_languages",
+      "title": "whisper_languages",
+      "description": "get whisper_languages list",
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
