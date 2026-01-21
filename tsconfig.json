@@ -2,19 +2,24 @@
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "strict": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "lib": ["ES2023"],
-    "target": "ES2022",
-    "module": "commonjs",
+    "lib": [
+      "ES2021",
+      "ES2022.Object",
+      "DOM"
+    ],
+    "target": "ES2021",
+    "module": "nodenext",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
     "declaration": true,
     "experimentalDecorators": true,
@@ -25,9 +30,14 @@
     "useDefineForClassFields": true,
     "strictPropertyInitialization": false,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "resolveJsonModule": true
+    "jsx": "react-jsx"
   },
-  "exclude": ["node_modules/", "dist/", "tests/"],
-  "include": ["src/**/*", "src/whisperOffline.ts", "src/elevenlabs.ts", "src/enconvo_cloud_plan.ts"],
+  "exclude": [
+    "node_modules/",
+    "dist/",
+    "tests/"
+  ],
+  "include": [
+    "./src"
+  ]
 }

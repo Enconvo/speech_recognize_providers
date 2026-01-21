@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.172",
+  "version": "0.0.192",
   "description": "Speech-to-Text Providers",
   "title": "Speech-to-Text Providers",
   "icon": "icon.png",
@@ -102,35 +102,30 @@
       ]
     },
     {
-      "name": "parakeet_mlx",
-      "title": "Parakeet MLX",
-      "description": "Parakeet MLX Speech-to-Text Provider that allows you to use Parakeet MLX",
+      "name": "nvidia_parakeet",
+      "title": "Nvidia Parakeet",
+      "description": "Nvidia Parakeet Speech-to-Text Provider that allows you to use Nvidia Parakeet",
       "icon": "nvidia.png",
       "mode": "no-view",
       "commandType": "provider",
       "preferences": [
-        {
-          "name": "speechRecognitionLanguage",
-          "title": "Language",
-          "description": "The Language .",
-          "type": "dropdown",
-          "required": false,
-          "default": "en",
-          "data": [
-            {
-              "title": "English",
-              "value": "en"
-            }
-          ]
-        },
         {
           "name": "modelName",
           "title": "Model Name",
           "description": "The model name to use for speech recognition",
           "type": "dropdown",
           "required": false,
-          "default": "mlx-community/parakeet-tdt-0.6b-v2",
-          "dataProxy": "speech_recognize_providers|parakeet_models"
+          "default": "parakeet-tdt-0.6b-v3",
+          "data": [
+            {
+              "title": "Parakeet Tdt 0.6B V3",
+              "value": "parakeet-tdt-0.6b-v3"
+            },
+            {
+              "title": "Parakeet Tdt 0.6B V2",
+              "value": "parakeet-tdt-0.6b-v2"
+            }
+          ]
         }
       ]
     },
@@ -164,6 +159,20 @@
           "required": false,
           "dataProxy": "speech_recognize_providers|azure_voices",
           "default": "en-US"
+        },
+        {
+          "name": "modelName",
+          "title": "Model Name",
+          "description": "The model name to use for speech recognition",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Microsoft Azure",
+              "value": "azure"
+            }
+          ],
+          "default": "azure"
         }
       ]
     },
@@ -197,6 +206,20 @@
           "required": false,
           "dataProxy": "speech_recognize_providers|assemblyai_languages",
           "default": "en_us"
+        },
+        {
+          "name": "modelName",
+          "title": "Model Name",
+          "description": "The model name to use for speech recognition",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Universal",
+              "value": "universal"
+            }
+          ],
+          "default": "universal"
         }
       ]
     },
@@ -228,8 +251,13 @@
           "description": "Speech-to-text Model [more...](https://developers.deepgram.com/docs/models-languages-overview#nova-2)",
           "type": "dropdown",
           "required": false,
-          "dataProxy": "speech_recognize_providers|deepgram_models",
-          "default": "nova-2"
+          "default": "nova-3",
+          "data": [
+            {
+              "title": "Nova-3",
+              "value": "nova-3"
+            }
+          ]
         },
         {
           "name": "speechRecognitionLanguage",
@@ -294,10 +322,6 @@
             {
               "title": "whisper-large-v3",
               "value": "Whisper large-v3"
-            },
-            {
-              "title": "Distil-Whisper English",
-              "value": "distil-whisper-large-v3-en"
             }
           ],
           "default": "whisper-large-v3-turbo"
@@ -360,9 +384,26 @@
       "commandType": "provider",
       "preferences": [
         {
-          "name": "localWhisper",
-          "title": "Local Whisper Settings",
-          "type": "localWhisper"
+          "name": "modelName",
+          "title": "ModelName",
+          "description": "Speech-to-text Model",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "whisper-base",
+              "value": "openai_whisper-base"
+            },
+            {
+              "title": "whisper-small_216MB",
+              "value": "openai_whisper-small_216MB"
+            },
+            {
+              "title": "whisper-large-v3-v20240930_626MB",
+              "value": "openai_whisper-large-v3-v20240930_626MB"
+            }
+          ],
+          "default": "openai_whisper-small_216MB"
         }
       ]
     },

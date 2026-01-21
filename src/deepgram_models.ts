@@ -6,22 +6,6 @@ const models: DropdownListCache.ModelOutput[] = [
     {
         "title": "Nova-3",
         "value": "nova-3"
-    },
-    {
-        "title": "Nova-2",
-        "value": "nova-2"
-    },
-    {
-        "title": "Nova",
-        "value": "nova"
-    },
-    {
-        "title": "Enhanced",
-        "value": "enhanced"
-    },
-    {
-        "title": "Base",
-        "value": "base"
     }
 ]
 

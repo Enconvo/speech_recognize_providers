@@ -82,14 +82,16 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
                     const startTime = Date.now();
                     try {
                         const language = options.speechRecognitionLanguage.value === 'auto' ? undefined : options.speechRecognitionLanguage.value
+                        const responseFormat = options.modelName.value.includes('whisper') ? 'verbose_json' : 'json'
                         // Attempt transcription
                         const result = await this.openai.audio.transcriptions.create({
                             file: fs.createReadStream(tempFile),
                             model: options.modelName.value,
-                            response_format: "json",
+                            response_format: responseFormat,
                             prompt: options.prompt,
                             language: language
                         });
+                        console.log("result", result)
 
                         // Calculate and log processing time
                         const apiTime = (Date.now() - startTime) / 1000;
