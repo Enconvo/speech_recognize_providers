@@ -1,9 +1,11 @@
-import { SpeechToTextProvider } from "@enconvo/api";
+import { Commander, SpeechToTextProvider } from "@enconvo/api";
 import { AudioChunk, mergeTranscriptionResults, splitAudio } from "./audio_util.ts";
 import fs from "fs"
 import path from "path"
 import OpenAI from "openai";
 import { env } from "process";
+import { DiarizeResult, DiarizeUtils, TranscriptSegment } from "./utils/diarize_utils.ts";
+
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
@@ -32,7 +34,8 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
     }
 
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
-        const inputPath = params.audioFilePath.replace("file://", "")
+        let inputPath = params.audioFilePath.replace("file://", "")
+
 
         const chunkSize = 24 * 1024 * 1024
         const chunkOverlapTime = 5 // seconds
@@ -40,20 +43,39 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
         console.log("processedPath", processedPath)
 
         const chunks = await splitAudio(processedPath, chunkSize, chunkOverlapTime)
+        console.log("chunks", chunks.length)
         const transcribeResults = await this.transcribeChunks(chunks, this.options)
         // clean up
         if (inputPath !== processedPath) {
             fs.unlinkSync(processedPath)
         }
 
-        // Merge the transcription results
-        const mergedText = mergeTranscriptionResults(transcribeResults);
-        console.log("mergedText", mergedText)
+        // Merge the transcription results with segments (pass chunks for time offset adjustment)
+        const mergedResult = mergeTranscriptionResults(transcribeResults, chunks);
+        // console.log("mergedResult", JSON.stringify(mergedResult, null, 2))
+
+        // Convert segments to TranscriptSegment format
+        const transcriptSegments: SpeechToTextProvider.SpeechToTextResult['segments'] = mergedResult.segments.map(segment => ({
+            text: segment.text,
+            start: segment.start,
+            end: segment.end
+        }))
+
+        // Get diarization results
+        const diarizeResult = await Commander.send("fluidDiarize", {
+            file_path: inputPath,
+        }) as DiarizeResult
+
+        // Merge speaker info into segments
+        const segmentsWithSpeaker = DiarizeUtils.mergeDiarization(transcriptSegments, diarizeResult);
 
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
-            text: mergedText
+            text: mergedResult.text,
+            segments: segmentsWithSpeaker
         }
+
+        console.log("result", JSON.stringify(result, null, 2))
         return result
     }
 
@@ -141,3 +163,12 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
 
 
 
+
+// {
+//     "title": "OpenAI gpt-4o-mini-transcribe (100 points per time)",
+//     "value": "openai/gpt-4o-mini-transcribe"
+//   },
+//   {
+//     "title": "OpenAI gpt-4o-transcribe (200 points per time)",
+//     "value": "openai/gpt-4o-transcribe"
+//   }

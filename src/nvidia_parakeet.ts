@@ -1,8 +1,5 @@
-import { Commander, NativeAPI, SpeechToTextProvider } from "@enconvo/api";
-import Groq from "groq-sdk";
-import { AudioChunk, mergeTranscriptionResults, preHandleAudio, preprocessAudio, splitAudio } from "./audio_util.ts";
-import fs from "fs"
-import path from "path"
+import { Commander, SpeechToTextProvider } from "@enconvo/api";
+import { preprocessAudio } from "./audio_util.ts";
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
@@ -17,6 +14,7 @@ export class NvidiaParakeetProvider extends SpeechToTextProvider {
         const inputPath = params.audioFilePath.replace("file://", "")
 
         const filePath = preprocessAudio(inputPath, "wav")
+        console.log("filePath", filePath, inputPath)
 
         const resp = await Commander.send("fluidTranscribe", {
             file_path: filePath,
@@ -27,7 +25,7 @@ export class NvidiaParakeetProvider extends SpeechToTextProvider {
 
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
-            text: ""
+            text: resp.data?.text || ""
         }
         return result
     }

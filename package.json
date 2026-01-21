@@ -50,19 +50,8 @@
             {
               "title": "whisper-large-v3 (200 points per time)",
               "value": "groq/whisper-large-v3"
-            },
-            {
-              "title": "Distil-Whisper English (100 points per time)",
-              "value": "groq/distil-whisper-large-v3-en"
-            },
-            {
-              "title": "OpenAI gpt-4o-mini-transcribe (100 points per time)",
-              "value": "openai/gpt-4o-mini-transcribe"
-            },
-            {
-              "title": "OpenAI gpt-4o-transcribe (200 points per time)",
-              "value": "openai/gpt-4o-transcribe"
             }
+
           ],
           "default": "groq/whisper-large-v3-turbo"
         }

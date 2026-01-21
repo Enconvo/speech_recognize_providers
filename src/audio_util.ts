@@ -233,20 +233,130 @@ export function findLongestCommonSequence(sequences: string[], matchByWords: boo
   return totalSequence.join('');
 }
 
+// Segment structure from OpenAI verbose_json response
+export interface TranscriptionSegment {
+  id: number;
+  start: number;
+  end: number;
+  text: string;
+  tokens?: number[];
+  temperature?: number;
+  avg_logprob?: number;
+  compression_ratio?: number;
+  no_speech_prob?: number;
+}
+
+// Result structure with merged text and segments
+export interface MergedTranscriptionResult {
+  text: string;
+  segments: TranscriptionSegment[];
+}
+
 /**
 * Merge transcription chunks and handle overlaps
+* Also merges segments with adjusted timestamps based on chunk start times
 */
-export function mergeTranscriptionResults(results: SpeechToTextProvider.SpeechToTextResult[]): string {
-  // Sort results by start time
-  const sortedResults = results
-
-  if (!sortedResults.length) {
-    return "";
+export function mergeTranscriptionResults(
+  results: SpeechToTextProvider.SpeechToTextResult[],
+  chunks?: AudioChunk[]
+): MergedTranscriptionResult {
+  // Handle empty input
+  if (!results.length) {
+    return { text: "", segments: [] };
   }
 
   // Extract text sequences
-  const sequences = sortedResults.map(r => r.text);
+  const sequences = results.map(r => r.text);
 
-  // Merge using longest common sequence alignment
-  return findLongestCommonSequence(sequences);
+  // Merge text using longest common sequence alignment
+  const mergedText = findLongestCommonSequence(sequences);
+
+  // Merge segments with adjusted timestamps
+  const mergedSegments = mergeSegments(results, chunks);
+
+  return { text: mergedText, segments: mergedSegments };
+}
+
+/**
+ * Merge segments from multiple transcription results
+ * Adjusts timestamps based on chunk start times when audio is split
+ */
+function mergeSegments(
+  results: SpeechToTextProvider.SpeechToTextResult[],
+  chunks?: AudioChunk[]
+): TranscriptionSegment[] {
+  const allSegments: TranscriptionSegment[] = [];
+  let segmentIdCounter = 0;
+
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
+    const segments = result.segments as TranscriptionSegment[] | undefined;
+
+    if (!segments || segments.length === 0) {
+      continue;
+    }
+
+    // Get the chunk start time offset (0 if no chunks provided or single chunk)
+    const chunkStartTime = chunks && chunks[i] ? chunks[i].start : 0;
+
+    for (const segment of segments) {
+      // Adjust segment timestamps by adding chunk start time
+      const adjustedSegment: TranscriptionSegment = {
+        ...segment,
+        id: segmentIdCounter++,
+        start: segment.start + chunkStartTime,
+        end: segment.end + chunkStartTime
+      };
+      allSegments.push(adjustedSegment);
+    }
+  }
+
+  // Sort segments by start time and remove duplicates from overlapping regions
+  return deduplicateOverlappingSegments(allSegments);
+}
+
+/**
+ * Remove duplicate segments from overlapping regions
+ * When audio chunks overlap, the same content may be transcribed twice
+ */
+function deduplicateOverlappingSegments(segments: TranscriptionSegment[]): TranscriptionSegment[] {
+  if (segments.length <= 1) {
+    return segments;
+  }
+
+  // Sort by start time
+  const sorted = [...segments].sort((a, b) => a.start - b.start);
+  const result: TranscriptionSegment[] = [];
+
+  for (const segment of sorted) {
+    // Check if this segment overlaps significantly with the last added segment
+    const lastSegment = result[result.length - 1];
+
+    if (!lastSegment) {
+      result.push(segment);
+      continue;
+    }
+
+    // Calculate overlap ratio
+    const overlapStart = Math.max(lastSegment.start, segment.start);
+    const overlapEnd = Math.min(lastSegment.end, segment.end);
+    const overlapDuration = Math.max(0, overlapEnd - overlapStart);
+    const segmentDuration = segment.end - segment.start;
+
+    // If overlap is more than 50% of the segment duration, consider it a duplicate
+    if (overlapDuration > 0 && overlapDuration / segmentDuration > 0.5) {
+      // Skip this segment as it's likely a duplicate from overlapping chunks
+      continue;
+    }
+
+    // If segments overlap but not significantly, adjust the start time
+    if (segment.start < lastSegment.end) {
+      segment.start = lastSegment.end;
+    }
+
+    result.push(segment);
+  }
+
+  // Re-assign sequential IDs
+  return result.map((seg, idx) => ({ ...seg, id: idx }));
 }
