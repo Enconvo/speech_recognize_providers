@@ -54,8 +54,8 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
 
-        const baseUrl = "http://127.0.0.1:8181/v1"
-        // const baseUrl = "https://api.enconvo.com/v1"
+        // const baseUrl = "http://127.0.0.1:8181/v1"
+        const baseUrl = "https://api.enconvo.com/v1"
 
         this.openai = new OpenAI({
             apiKey: "default",
