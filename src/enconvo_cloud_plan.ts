@@ -4,8 +4,44 @@ import fs from "fs"
 import path from "path"
 import OpenAI from "openai";
 import { env } from "process";
-import { DiarizeResult, DiarizeUtils, TranscriptSegment } from "./utils/diarize_utils.ts";
+import { DiarizeResult, DiarizeUtils } from "./utils/diarize_utils.ts";
+import { AudioResponseFormat } from "openai/resources";
 
+/**
+ * Merge consecutive segments with the same speaker into one segment
+ */
+function mergeConsecutiveSpeakerSegments(
+    segments: SpeechToTextProvider.TranscriptSegment[]
+): SpeechToTextProvider.TranscriptSegment[] {
+    if (!segments || segments.length === 0) {
+        return [];
+    }
+
+    const mergedSegments: SpeechToTextProvider.TranscriptSegment[] = [];
+    let currentMerged: SpeechToTextProvider.TranscriptSegment | null = null;
+
+    for (const segment of segments) {
+        if (!currentMerged) {
+            // Start a new merged segment
+            currentMerged = { ...segment };
+        } else if (currentMerged.speaker === segment.speaker) {
+            // Same speaker, merge the segments
+            currentMerged.text = currentMerged.text + segment.text;
+            currentMerged.end = segment.end;
+        } else {
+            // Different speaker, push current and start new
+            mergedSegments.push(currentMerged);
+            currentMerged = { ...segment };
+        }
+    }
+
+    // Don't forget the last segment
+    if (currentMerged) {
+        mergedSegments.push(currentMerged);
+    }
+
+    return mergedSegments;
+}
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
@@ -18,8 +54,8 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
 
-        // const baseUrl = "http://127.0.0.1:8181/v1"
-        const baseUrl = "https://api.enconvo.com/v1"
+        const baseUrl = "http://127.0.0.1:8181/v1"
+        // const baseUrl = "https://api.enconvo.com/v1"
 
         this.openai = new OpenAI({
             apiKey: "default",
@@ -36,31 +72,40 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
         let inputPath = params.audioFilePath.replace("file://", "")
 
-        const chunkSize = 99 * 1024 * 1024
+        const chunkSize = 24.5 * 1024 * 1024
         const chunkOverlapTime = 5 // seconds
         const processedPath = inputPath
         console.log("processedPath", processedPath)
 
         const chunks = await splitAudio(processedPath, chunkSize, chunkOverlapTime)
         console.log("chunks", chunks.length)
-        const transcribeResults = await this.transcribeChunks(chunks, this.options)
+        const transcribeResults = await this.transcribeChunks(chunks, this.options, params)
         // clean up
         if (inputPath !== processedPath) {
             fs.unlinkSync(processedPath)
         }
 
         // Merge the transcription results with segments (pass chunks for time offset adjustment)
-        const mergedResult = mergeTranscriptionResults(transcribeResults, chunks);
+        const mergedResult = mergeTranscriptionResults(transcribeResults.result, chunks);
         // console.log("mergedResult", JSON.stringify(mergedResult, null, 2))
 
         // Convert segments to TranscriptSegment format
-        let transcriptSegments: SpeechToTextProvider.SpeechToTextResult['segments'] = mergedResult.segments.map(segment => ({
-            text: segment.text,
-            start: segment.start,
-            end: segment.end
-        }))
+        let transcriptSegments: SpeechToTextProvider.SpeechToTextResult['segments'] = mergedResult.segments.map(segment => {
+            let speaker = segment.speaker;
+            // Convert A, B, C, etc. to Speaker1, Speaker2, Speaker3, etc.
+            if (speaker && /^[A-Z]$/.test(speaker)) {
+                const speakerNumber = speaker.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+                speaker = `Speaker${speakerNumber}`;
+            }
+            return {
+                text: segment.text,
+                start: segment.start,
+                end: segment.end,
+                speaker: speaker
+            };
+        })
 
-        if (params.diarization) {
+        if (params.diarization && !transcribeResults.diarized) {
             // Get diarization results
             const diarizeResult = await Commander.send("fluidDiarize", {
                 file_path: inputPath,
@@ -69,10 +114,14 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
 
             // Merge speaker info into segments
             transcriptSegments = DiarizeUtils.mergeDiarization(transcriptSegments, diarizeResult);
-
-            mergedResult.text = transcriptSegments.map(segment => `${segment.speaker}: ${segment.text}`).join("\n\n")
-
         }
+
+        if (params.diarization) {
+            // Merge consecutive segments with the same speaker
+            transcriptSegments = mergeConsecutiveSpeakerSegments(transcriptSegments);
+            mergedResult.text = transcriptSegments.map(segment => `${segment.speaker}: ${segment.text}`).join("\n\n")
+        }
+
 
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
@@ -91,10 +140,30 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
      */
     async transcribeChunks(
         chunks: AudioChunk[],
-        options: SpeechToTextProvider.SpeechToTextOptions
-    ): Promise<SpeechToTextProvider.SpeechToTextResult[]> {
+        options: SpeechToTextProvider.SpeechToTextOptions,
+        params: SpeechToTextProvider.AudioToTextParams
+    ): Promise<{
+        result: SpeechToTextProvider.SpeechToTextResult[]
+        diarized: boolean
+    }> {
         let totalApiTime = 0;
         const results: SpeechToTextProvider.SpeechToTextResult[] = []
+
+        const language = options.speechRecognitionLanguage.value === 'auto' ? undefined : options.speechRecognitionLanguage.value
+        let responseFormat: AudioResponseFormat = 'json'
+        // Attempt transcription
+        let modelName = options.modelName.value
+        let diarized = false
+        if (modelName.includes('gpt-4o-transcribe') && params.diarization) {
+            modelName = modelName.replace('gpt-4o-transcribe', 'gpt-4o-transcribe-diarize')
+            responseFormat = 'diarized_json'
+            diarized = true
+        }
+
+        if (modelName.includes('whisper')) {
+            responseFormat = 'verbose_json'
+        }
+
         for (const chunk of chunks) {
 
             console.log("Transcribing chunk: ", chunk.path)
@@ -104,21 +173,22 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
             const INITIAL_RETRY_DELAY = 60000; // Initial retry delay in milliseconds
             let retryCount = 0;
 
+
             try {
                 while (retryCount < MAX_RETRIES) {
                     const startTime = Date.now();
                     try {
-                        const language = options.speechRecognitionLanguage.value === 'auto' ? undefined : options.speechRecognitionLanguage.value
-                        const responseFormat = options.modelName.value.includes('whisper') ? 'verbose_json' : 'json'
-                        // Attempt transcription
+
+
                         const result = await this.openai.audio.transcriptions.create({
                             file: fs.createReadStream(tempFile),
-                            model: options.modelName.value,
+                            model: modelName,
                             response_format: responseFormat,
                             prompt: options.prompt,
-                            language: language
+                            language: language,
+                            chunking_strategy: "auto"
                         });
-                        console.log("result", result)
+                        console.log("result...", result)
 
                         // Calculate and log processing time
                         const apiTime = (Date.now() - startTime) / 1000;
@@ -161,7 +231,10 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
         }
 
         console.log(" total api time: ", totalApiTime)
-        return results
+        return {
+            result: results,
+            diarized: diarized
+        }
     }
 }
 

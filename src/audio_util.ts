@@ -240,6 +240,7 @@ export interface TranscriptionSegment {
   end: number;
   text: string;
   tokens?: number[];
+  speaker?: string;
   temperature?: number;
   avg_logprob?: number;
   compression_ratio?: number;

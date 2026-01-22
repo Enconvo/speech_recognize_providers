@@ -3,7 +3,7 @@
   "name": "speech_recognize_providers",
   "version": "0.0.192",
   "description": "Speech-to-Text Providers",
-  "title": "Speech-to-Text Providers",
+  "title": "Dictation Model Providers",
   "icon": "icon.png",
   "author": "EnconvoAI",
   "categories": [
@@ -13,10 +13,64 @@
   "type": "module",
   "commands": [
     {
-      "name": "enconvo_cloud_plan",
-      "title": "Enconvo Cloud Plan",
+      "name": "openai_enconvo",
+      "title": "OpenAI (Enconvo Cloud)",
       "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
-      "icon": "enconvo.png",
+      "icon": "openai.png",
+      "mode": "no-view",
+      "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
+      "commandType": "provider",
+      "preferences": [
+        {
+          "name": "modelName",
+          "title": "ModelName",
+          "description": "Speech-to-text Model [more...](https://docs.groq.com/docs/speech-to-text/models)",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "OpenAI gpt-4o-mini-transcribe (100 points per time)",
+              "value": "openai/gpt-4o-mini-transcribe"
+            },
+            {
+              "title": "OpenAI gpt-4o-transcribe (200 points per time)",
+              "value": "openai/gpt-4o-transcribe"
+            }
+          ],
+          "default": "openai/gpt-4o-mini-transcribe"
+        }
+      ]
+    },
+    {
+      "name": "mistral_enconvo",
+      "title": "Mistral (Enconvo Cloud )",
+      "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
+      "icon": "mistral.jpg",
+      "mode": "no-view",
+      "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
+      "commandType": "provider",
+      "preferences": [
+        {
+          "name": "modelName",
+          "title": "ModelName",
+          "description": "Speech-to-text Model [more...](https://docs.groq.com/docs/speech-to-text/models)",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Mistral Voxtral Mini (100 points per time)",
+              "value": "mistral/voxtral-mini-latest"
+            }
+          ],
+          "default": "mistral/voxtral-mini-latest"
+        }
+      ]
+    },
+    {
+      "name": "enconvo_cloud_plan",
+      "title": "Groq (Enconvo Cloud)",
+      "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
+      "icon": "groq.png",
       "mode": "no-view",
       "commandType": "provider",
       "preferences": [
@@ -51,7 +105,6 @@
               "title": "whisper-large-v3 (200 points per time)",
               "value": "groq/whisper-large-v3"
             }
-
           ],
           "default": "groq/whisper-large-v3-turbo"
         }
@@ -166,6 +219,31 @@
       ]
     },
     {
+      "name": "assembly_ai_enconvo",
+      "title": "Assembly AI(Enconvo Cloud)",
+      "description": "Assembly AI Speech-to-Text Provider that allows you to use Assembly AI's online Speech-to-Text service",
+      "icon": "assemblyai.png",
+      "mode": "no-view",
+      "commandType": "provider",
+      "targetCommand": "speech_recognize_providers|assembly_ai",
+      "preferences": [
+        {
+          "name": "credentials",
+          "description": "The key management provider to use",
+          "type": "extension",
+          "required": false,
+          "default": "enconvo_ai",
+          "extensionType": "credentials-provider",
+          "extensionFilter": {
+            "targetCommands": [
+              "credentials|enconvo_ai"
+            ]
+          },
+          "title": "Credential Provider"
+        }
+      ]
+    },
+    {
       "name": "assembly_ai",
       "title": "Assembly AI",
       "description": "Assembly AI Speech-to-Text Provider that allows you to use Assembly AI's online Speech-to-Text service",
@@ -194,7 +272,7 @@
           "type": "dropdown",
           "required": false,
           "dataProxy": "speech_recognize_providers|assemblyai_languages",
-          "default": "en_us"
+          "default": "auto"
         },
         {
           "name": "modelName",
@@ -245,10 +323,6 @@
             {
               "title": "Nova-3",
               "value": "nova-3"
-            },
-            {
-              "title": "Nova-2",
-              "value": "nova-2"
             }
           ]
         },
@@ -494,11 +568,11 @@
     }
   ],
   "dependencies": {
-    "@deepgram/sdk": "^3.9.0",
+    "@deepgram/sdk": "^4.11.3",
     "@enconvo/api": "link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api",
     "@huggingface/hub": "^2.4.0",
     "@modelcontextprotocol/sdk": "^1.16.0",
-    "assemblyai": "^4.8.0",
+    "assemblyai": "^4.22.1",
     "axios": "^1.7.9",
     "elevenlabs": "^1.52.0",
     "form-data": "^4.0.1",
@@ -506,7 +580,7 @@
     "groq-sdk": "^0.12.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.42.0",
     "music-metadata": "^10.7.0",
-    "openai": "^4.95.1"
+    "openai": "^6.16.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
