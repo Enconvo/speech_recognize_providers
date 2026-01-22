@@ -1,244 +1,245 @@
-import { environment } from "@enconvo/api";
-import fs from 'fs'
 
 
-const voices = [
+const languages = [
+  {
+    "title": "Multilingual",
+    "value": "multi"
+  },
+  {
+    "title": "Belarusian (Беларуская)",
+    "value": "be"
+  },
+  {
+    "title": "Bengali (বাংলা)",
+    "value": "bn"
+  },
+  {
+    "title": "Bosnian (Bosanski)",
+    "value": "bs"
+  },
+  {
+    "title": "Bulgarian (Български)",
+    "value": "bg"
+  },
+  {
+    "title": "Catalan (Català)",
+    "value": "ca"
+  },
+  {
+    "title": "Croatian (Hrvatski)",
+    "value": "hr"
+  },
+  {
+    "title": "Czech (Čeština)",
+    "value": "cs"
+  },
+  {
+    "title": "Danish (Dansk)",
+    "value": "da"
+  },
+  {
+    "title": "Danish - Denmark (Dansk - Danmark)",
+    "value": "da-DK"
+  },
+  {
+    "title": "Dutch (Nederlands)",
+    "value": "nl"
+  },
   {
     "title": "English",
     "value": "en"
   },
   {
-    "title": "English (US)",
+    "title": "English - US",
     "value": "en-US"
   },
   {
-    "title": "English (Australia)",
+    "title": "English - Australia",
     "value": "en-AU"
   },
   {
-    "title": "English (UK)",
+    "title": "English - UK",
     "value": "en-GB"
   },
   {
-    "title": "English (New Zealand)",
-    "value": "en-NZ"
-  },
-  {
-    "title": "English (India)",
+    "title": "English - India",
     "value": "en-IN"
   },
   {
-    "title": "日本語",
-    "value": "ja"
+    "title": "English - New Zealand",
+    "value": "en-NZ"
   },
   {
-    "title": "中文简体（Chinese Mandarin）",
-    "value": "zh"
-  },
-  {
-    "title": "Chinese (Traditional)",
-    "value": "zh-Hant"
-  },
-  {
-    "title": "한국어",
-    "value": "ko"
-  },
-  {
-    "title": "한국어 (대한민국)",
-    "value": "ko-KR"
-  },
-  {
-    "title": "Français",
-    "value": "fr"
-  },
-  {
-    "title": "Français (Canada)",
-    "value": "fr-CA"
-  },
-  {
-    "title": "Български",
-    "value": "bg"
-  },
-  {
-    "title": "Català",
-    "value": "ca"
-  },
-  {
-    "title": "Čeština",
-    "value": "cs"
-  },
-  {
-    "title": "Dansk",
-    "value": "da"
-  },
-  {
-    "title": "Dansk (Danmark)",
-    "value": "da-DK"
-  },
-  {
-    "title": "Nederlands",
-    "value": "nl"
-  },
-  {
-    "title": "Eesti",
+    "title": "Estonian (Eesti)",
     "value": "et"
   },
   {
-    "title": "Suomi",
+    "title": "Finnish (Suomi)",
     "value": "fi"
   },
   {
-    "title": "Vlaams",
+    "title": "Flemish (Vlaams)",
     "value": "nl-BE"
   },
   {
-    "title": "Deutsch",
+    "title": "French (Français)",
+    "value": "fr"
+  },
+  {
+    "title": "French - Canada (Français - Canada)",
+    "value": "fr-CA"
+  },
+  {
+    "title": "German (Deutsch)",
     "value": "de"
   },
   {
-    "title": "Schweizerdeutsch",
+    "title": "German - Switzerland (Deutsch - Schweiz)",
     "value": "de-CH"
   },
   {
-    "title": "Ελληνικά",
+    "title": "Greek (Ελληνικά)",
     "value": "el"
   },
   {
-    "title": "हिन्दी",
+    "title": "Hindi (हिन्दी)",
     "value": "hi"
   },
   {
-    "title": "Magyar",
+    "title": "Hungarian (Magyar)",
     "value": "hu"
   },
   {
-    "title": "Bahasa Indonesia",
+    "title": "Indonesian (Bahasa Indonesia)",
     "value": "id"
   },
   {
-    "title": "Italiano",
+    "title": "Italian (Italiano)",
     "value": "it"
   },
   {
-    "title": "Latviešu",
+    "title": "Japanese (日本語)",
+    "value": "ja"
+  },
+  {
+    "title": "Kannada (ಕನ್ನಡ)",
+    "value": "kn"
+  },
+  {
+    "title": "Korean (한국어)",
+    "value": "ko"
+  },
+  {
+    "title": "Korean - Korea (한국어 - 대한민국)",
+    "value": "ko-KR"
+  },
+  {
+    "title": "Latvian (Latviešu)",
     "value": "lv"
   },
   {
-    "title": "Lietuvių",
+    "title": "Lithuanian (Lietuvių)",
     "value": "lt"
   },
   {
-    "title": "Bahasa Melayu",
+    "title": "Macedonian (Македонски)",
+    "value": "mk"
+  },
+  {
+    "title": "Malay (Bahasa Melayu)",
     "value": "ms"
   },
   {
-    "title": "Norsk",
+    "title": "Marathi (मराठी)",
+    "value": "mr"
+  },
+  {
+    "title": "Norwegian (Norsk)",
     "value": "no"
   },
   {
-    "title": "Polski",
+    "title": "Polish (Polski)",
     "value": "pl"
   },
   {
-    "title": "Português",
+    "title": "Portuguese (Português)",
     "value": "pt"
   },
   {
-    "title": "Português (Brasil)",
+    "title": "Portuguese - Brazil (Português - Brasil)",
     "value": "pt-BR"
   },
   {
-    "title": "Română",
+    "title": "Portuguese - Portugal (Português - Portugal)",
+    "value": "pt-PT"
+  },
+  {
+    "title": "Romanian (Română)",
     "value": "ro"
   },
   {
-    "title": "Русский",
+    "title": "Russian (Русский)",
     "value": "ru"
   },
   {
-    "title": "Slovenčina",
+    "title": "Serbian (Српски)",
+    "value": "sr"
+  },
+  {
+    "title": "Slovak (Slovenčina)",
     "value": "sk"
   },
   {
-    "title": "Español",
+    "title": "Slovenian (Slovenščina)",
+    "value": "sl"
+  },
+  {
+    "title": "Spanish (Español)",
     "value": "es"
   },
   {
-    "title": "Español (Latinoamérica)",
+    "title": "Spanish - Latin America (Español - Latinoamérica)",
     "value": "es-419"
   },
   {
-    "title": "Svenska",
+    "title": "Swedish (Svenska)",
     "value": "sv"
   },
   {
-    "title": "Svenska (Sverige)",
+    "title": "Swedish - Sweden (Svenska - Sverige)",
     "value": "sv-SE"
   },
   {
-    "title": "ไทย",
-    "value": "th"
+    "title": "Tagalog",
+    "value": "tl"
   },
   {
-    "title": "ไทย (ประเทศไทย)",
-    "value": "th-TH"
+    "title": "Tamil (தமிழ்)",
+    "value": "ta"
   },
   {
-    "title": "Türkçe",
+    "title": "Telugu (తెలుగు)",
+    "value": "te"
+  },
+  {
+    "title": "Turkish (Türkçe)",
     "value": "tr"
   },
   {
-    "title": "Українська",
+    "title": "Ukrainian (Українська)",
     "value": "uk"
   },
   {
-    "title": "Tiếng Việt",
+    "title": "Vietnamese (Tiếng Việt)",
     "value": "vi"
   }
 ]
 
-async function fetch_model() {
-
-  let models: any[] = []
-  try {
-    models = voices.map((item) => {
-      return {
-        "title": `${item.title}`,
-        "value": `${item.value}`
-      }
-    })
-  } catch (err) {
-    console.log(err)
-  }
-
-  return models
-}
 
 export default async function main(req: Request) {
-  const { text } = await req.json()
-
-  const modelCacheDir = environment.assetsPath + `/models`
-  if (!fs.existsSync(modelCacheDir)) {
-    fs.mkdirSync(modelCacheDir, { recursive: true })
-  }
-  const modelCachePath = `${modelCacheDir}/${environment.commandName}.json`
-
-  console.log('text', text, modelCachePath)
-  fs.existsSync(modelCachePath) || fs.writeFileSync(modelCachePath, '[]')
-
-  const modelContent = fs.readFileSync(modelCachePath, 'utf8')
-  let models = JSON.parse(modelContent)
-
-  try {
-    if (text === 'refresh' || models.length === 0) {
-      models = await fetch_model()
-      fs.writeFileSync(modelCachePath, JSON.stringify(models))
-    }
-  } catch (err) {
-    console.log(err)
-  }
-
-  return JSON.stringify(models)
+  const options = await req.json()
+  // console.log('options', JSON.stringify(options,null,2))
+  return JSON.stringify(languages)
 }
 
 

@@ -1,8 +1,9 @@
-import { SpeechToTextProvider } from "@enconvo/api";
+import { Commander, SpeechToTextProvider } from "@enconvo/api";
 import Groq from "groq-sdk";
 import { AudioChunk, mergeTranscriptionResults, preHandleAudio, preprocessAudio, splitAudio } from "./audio_util.ts";
 import fs from "fs"
 import path from "path"
+import { DiarizeResult, DiarizeUtils } from "./utils/diarize_utils.ts";
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
@@ -38,13 +39,33 @@ export class GroqProvider extends SpeechToTextProvider {
             fs.unlinkSync(processedPath)
         }
 
-        // Merge the transcription results
-        const mergedText = mergeTranscriptionResults(transcribeResults);
-        console.log("mergedText", mergedText)
+        // Merge the transcription results with segments (pass chunks for time offset adjustment)
+        const mergedResult = mergeTranscriptionResults(transcribeResults, chunks);
+        // console.log("mergedResult", JSON.stringify(mergedResult, null, 2))
+
+        // Convert segments to TranscriptSegment format
+        let transcriptSegments: SpeechToTextProvider.SpeechToTextResult['segments'] = mergedResult.segments.map(segment => ({
+            text: segment.text,
+            start: segment.start,
+            end: segment.end
+        }))
+
+        if (params.diarization) {
+            // Get diarization results
+            const diarizeResult = await Commander.send("fluidDiarize", {
+                file_path: inputPath,
+            }) as DiarizeResult
+            console.log("diarizeResult", JSON.stringify(diarizeResult, null, 2))
+
+            // Merge speaker info into segments
+            transcriptSegments = DiarizeUtils.mergeDiarization(transcriptSegments, diarizeResult);
+            mergedResult.text = transcriptSegments.map(segment => `${segment.speaker}: ${segment.text}`).join(" ")
+        }
 
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
-            text: mergedText
+            text: mergedResult.text,
+            segments: transcriptSegments
         }
         return result
     }

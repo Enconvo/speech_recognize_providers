@@ -36,8 +36,7 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
         let inputPath = params.audioFilePath.replace("file://", "")
 
-
-        const chunkSize = 24 * 1024 * 1024
+        const chunkSize = 99 * 1024 * 1024
         const chunkOverlapTime = 5 // seconds
         const processedPath = inputPath
         console.log("processedPath", processedPath)
@@ -55,24 +54,30 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
         // console.log("mergedResult", JSON.stringify(mergedResult, null, 2))
 
         // Convert segments to TranscriptSegment format
-        const transcriptSegments: SpeechToTextProvider.SpeechToTextResult['segments'] = mergedResult.segments.map(segment => ({
+        let transcriptSegments: SpeechToTextProvider.SpeechToTextResult['segments'] = mergedResult.segments.map(segment => ({
             text: segment.text,
             start: segment.start,
             end: segment.end
         }))
 
-        // Get diarization results
-        const diarizeResult = await Commander.send("fluidDiarize", {
-            file_path: inputPath,
-        }) as DiarizeResult
+        if (params.diarization) {
+            // Get diarization results
+            const diarizeResult = await Commander.send("fluidDiarize", {
+                file_path: inputPath,
+            }) as DiarizeResult
+            console.log("diarizeResult", JSON.stringify(diarizeResult, null, 2))
 
-        // Merge speaker info into segments
-        const segmentsWithSpeaker = DiarizeUtils.mergeDiarization(transcriptSegments, diarizeResult);
+            // Merge speaker info into segments
+            transcriptSegments = DiarizeUtils.mergeDiarization(transcriptSegments, diarizeResult);
+
+            mergedResult.text = transcriptSegments.map(segment => `${segment.speaker}: ${segment.text}`).join("\n\n")
+
+        }
 
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
             text: mergedResult.text,
-            segments: segmentsWithSpeaker
+            segments: transcriptSegments
         }
 
         console.log("result", JSON.stringify(result, null, 2))

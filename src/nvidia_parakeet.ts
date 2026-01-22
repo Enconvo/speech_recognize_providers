@@ -21,11 +21,23 @@ export class NvidiaParakeetProvider extends SpeechToTextProvider {
             model_id: this.options.modelName.value || "v3"
         })
 
-        console.log("resp", resp)
+        console.log("resp", JSON.stringify(resp, null, 2))
+
+        const transcriptSegments = resp.data?.segments || []
+
+        // Get diarization results
+        // const diarizeResult = await Commander.send("fluidDiarize", {
+        //     file_path: inputPath,
+        // }) as DiarizeResult
+        // console.log("diarizeResult", JSON.stringify(diarizeResult, null, 2))
+
+        // const segmentsWithSpeaker = DiarizeUtils.mergeDiarization(transcriptSegments, diarizeResult);
+        // console.log("segmentsWithSpeaker", JSON.stringify(segmentsWithSpeaker, null, 2))
 
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
-            text: resp.data?.text || ""
+            text: resp.data?.text || "",
+            segments: transcriptSegments
         }
         return result
     }

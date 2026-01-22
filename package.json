@@ -245,6 +245,10 @@
             {
               "title": "Nova-3",
               "value": "nova-3"
+            },
+            {
+              "title": "Nova-2",
+              "value": "nova-2"
             }
           ]
         },
@@ -255,7 +259,7 @@
           "type": "dropdown",
           "required": false,
           "dataProxy": "speech_recognize_providers|deepgram_languages",
-          "default": "en"
+          "default": "multi"
         }
       ]
     },
@@ -448,7 +452,18 @@
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
-      "mode": "no-view"
+      "mode": "no-view",
+      "preferences": [
+        {
+          "name": "modelName",
+          "title": "ModelName",
+          "description": "Speech-to-text Model [more...](https://developers.deepgram.com/docs/models-languages-overview#nova-2)",
+          "type": "dropdown",
+          "required": false,
+          "default": "nova-3",
+          "defaultProxy": "speech_recognize_providers|deepgram"
+        }
+      ]
     },
     {
       "name": "assemblyai_languages",
