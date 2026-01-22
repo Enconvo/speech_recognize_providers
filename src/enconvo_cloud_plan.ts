@@ -186,7 +186,7 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
                             response_format: responseFormat,
                             prompt: options.prompt,
                             language: language,
-                            chunking_strategy: "auto"
+                            chunking_strategy: modelName.includes('gpt-4o-transcribe-diarize') ? "auto" : undefined
                         });
                         console.log("result...", result)
 
