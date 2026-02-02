@@ -1,5 +1,5 @@
 import { Commander, SpeechToTextProvider } from "@enconvo/api";
-import { preprocessAudio } from "./audio_util.ts";
+import { getDuration, preprocessAudio } from "./audio_util.ts";
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
@@ -14,7 +14,7 @@ export class NvidiaParakeetProvider extends SpeechToTextProvider {
         const inputPath = params.audioFilePath.replace("file://", "")
 
         const filePath = preprocessAudio(inputPath, "wav")
-        console.log("filePath", filePath, inputPath)
+        // console.log("filePath", filePath, inputPath)
 
         const resp = await Commander.send("fluidTranscribe", {
             file_path: filePath,
@@ -24,6 +24,7 @@ export class NvidiaParakeetProvider extends SpeechToTextProvider {
         console.log("resp", JSON.stringify(resp, null, 2))
 
         const transcriptSegments = resp.data?.segments || []
+        const transcriptDuration = resp.data?.duration || 0
 
         // Get diarization results
         // const diarizeResult = await Commander.send("fluidDiarize", {
@@ -37,7 +38,8 @@ export class NvidiaParakeetProvider extends SpeechToTextProvider {
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
             text: resp.data?.text || "",
-            segments: transcriptSegments
+            segments: transcriptSegments,
+            duration: Math.round(transcriptDuration)
         }
         return result
     }

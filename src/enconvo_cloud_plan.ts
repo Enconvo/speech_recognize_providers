@@ -1,5 +1,5 @@
 import { Commander, SpeechToTextProvider } from "@enconvo/api";
-import { AudioChunk, mergeTranscriptionResults, splitAudio } from "./audio_util.ts";
+import { AudioChunk, getDuration, mergeTranscriptionResults, splitAudio } from "./audio_util.ts";
 import fs from "fs"
 import path from "path"
 import OpenAI from "openai";
@@ -76,7 +76,7 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
         const chunkOverlapTime = 5 // seconds
         const processedPath = inputPath
         console.log("processedPath", processedPath)
-
+        const duration = await getDuration(processedPath);
         const chunks = await splitAudio(processedPath, chunkSize, chunkOverlapTime)
         console.log("chunks", chunks.length)
         const transcribeResults = await this.transcribeChunks(chunks, this.options, params)
@@ -105,28 +105,29 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
             };
         })
 
-        if (params.diarization && !transcribeResults.diarized) {
-            // Get diarization results
-            const diarizeResult = await Commander.send("fluidDiarize", {
-                file_path: inputPath,
-            }) as DiarizeResult
-            console.log("diarizeResult", JSON.stringify(diarizeResult, null, 2))
+        // if (params.diarization && !transcribeResults.diarized) {
+        //     // Get diarization results
+        //     const diarizeResult = await Commander.send("fluidDiarize", {
+        //         file_path: inputPath,
+        //     }) as DiarizeResult
+        //     console.log("diarizeResult", JSON.stringify(diarizeResult, null, 2))
 
-            // Merge speaker info into segments
-            transcriptSegments = DiarizeUtils.mergeDiarization(transcriptSegments, diarizeResult);
-        }
+        //     // Merge speaker info into segments
+        //     transcriptSegments = DiarizeUtils.mergeDiarization(transcriptSegments, diarizeResult);
+        // }
 
-        if (params.diarization) {
+        // if (params.diarization) {
             // Merge consecutive segments with the same speaker
-            transcriptSegments = mergeConsecutiveSpeakerSegments(transcriptSegments);
-            mergedResult.text = transcriptSegments.map(segment => `${segment.speaker}: ${segment.text}`).join("\n\n")
-        }
+            // transcriptSegments = mergeConsecutiveSpeakerSegments(transcriptSegments);
+            // mergedResult.text = transcriptSegments.map(segment => `${segment.speaker}: ${segment.text}`).join("\n\n")
+        // }
 
 
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
             text: mergedResult.text,
-            segments: transcriptSegments
+            segments: transcriptSegments,
+            duration: Math.round(duration)
         }
 
         console.log("result", JSON.stringify(result, null, 2))

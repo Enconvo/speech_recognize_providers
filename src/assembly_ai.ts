@@ -1,6 +1,6 @@
 import { SpeechToTextProvider } from "@enconvo/api";
 import { AssemblyAI, BaseServiceParams, TranscribeParams } from 'assemblyai'
-import { preprocessAudio } from "./audio_util.ts";
+import { getDuration, preprocessAudio } from "./audio_util.ts";
 import fs from "fs"
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
@@ -13,7 +13,7 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
     private client: AssemblyAI
     constructor(options: SpeechToTextProvider.SpeechToTextOptions) {
         super(options)
-        console.log("options-", options)
+        // console.log("options-", options)
         const credentials = this.options.credentials
 
         const data: BaseServiceParams = {
@@ -27,9 +27,10 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
     }
 
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
-        console.log("params-", params)
+        // console.log("params-", params)
         const inputPath = params.audioFilePath.replace("file://", "")
         const filePath = preprocessAudio(inputPath)
+        const duration = await getDuration(inputPath);
 
         const data: TranscribeParams = {
             audio: filePath,
@@ -50,12 +51,24 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
 
         let text: string | undefined = undefined
         let segments: SpeechToTextProvider.TranscriptSegment[] | undefined = undefined
+        let paragraphs: SpeechToTextProvider.TranscriptSegment[] | undefined = undefined
         if (transcript.status === 'error') {
             console.error(`Transcription failed: ${transcript.error}`)
             text = transcript.error
         } else {
             text = transcript.text || ""
-            segments = transcript.utterances?.map(utterance => {
+            segments = transcript.words?.map(word => {
+                const transcriptSegment: SpeechToTextProvider.TranscriptSegment = {
+                    start: word.start,
+                    end: word.end,
+                    text: word.text,
+                    speaker: word.speaker || undefined
+                }
+                return transcriptSegment
+            })
+
+
+            paragraphs = transcript.utterances?.map(utterance => {
                 const transcriptSegment: SpeechToTextProvider.TranscriptSegment = {
                     start: utterance.start,
                     end: utterance.end,
@@ -66,7 +79,7 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
             })
 
             if (params.diarization) {
-                text = segments?.map(segment => `Speaker${segment.speaker}: ${segment.text}`).join("\n\n")
+                text = paragraphs?.map(segment => `Speaker${segment.speaker}: ${segment.text}`).join("\n\n")
             }
         }
 
@@ -78,7 +91,9 @@ export class AssemblyAIProvider extends SpeechToTextProvider {
         const result: SpeechToTextProvider.SpeechToTextResult = {
             path: params.audioFilePath,
             text: text || "",
-            segments: segments || []
+            segments: segments || [],
+            paragraphs: paragraphs || [],
+            duration: Math.round(duration)
         }
 
         return result

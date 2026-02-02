@@ -2,7 +2,7 @@ import { parseFile } from 'music-metadata';
 import * as fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { Command, CommandUtil, SpeechToTextProvider, uuid } from '@enconvo/api';
+import { CommandUtil, SpeechToTextProvider, uuid } from '@enconvo/api';
 
 export const getDuration = async (filePath: string): Promise<number> => {
   const metadata = await parseFile(filePath);
