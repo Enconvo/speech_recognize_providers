@@ -1,47 +1,11 @@
-import { Commander, SpeechToTextProvider } from "@enconvo/api";
+import { SpeechToTextProvider } from "@enconvo/api";
 import { AudioChunk, getDuration, mergeTranscriptionResults, splitAudio } from "./audio_util.ts";
 import fs from "fs"
 import path from "path"
 import OpenAI from "openai";
 import { env } from "process";
-import { DiarizeResult, DiarizeUtils } from "./utils/diarize_utils.ts";
 import { AudioResponseFormat } from "openai/resources";
 
-/**
- * Merge consecutive segments with the same speaker into one segment
- */
-function mergeConsecutiveSpeakerSegments(
-    segments: SpeechToTextProvider.TranscriptSegment[]
-): SpeechToTextProvider.TranscriptSegment[] {
-    if (!segments || segments.length === 0) {
-        return [];
-    }
-
-    const mergedSegments: SpeechToTextProvider.TranscriptSegment[] = [];
-    let currentMerged: SpeechToTextProvider.TranscriptSegment | null = null;
-
-    for (const segment of segments) {
-        if (!currentMerged) {
-            // Start a new merged segment
-            currentMerged = { ...segment };
-        } else if (currentMerged.speaker === segment.speaker) {
-            // Same speaker, merge the segments
-            currentMerged.text = currentMerged.text + segment.text;
-            currentMerged.end = segment.end;
-        } else {
-            // Different speaker, push current and start new
-            mergedSegments.push(currentMerged);
-            currentMerged = { ...segment };
-        }
-    }
-
-    // Don't forget the last segment
-    if (currentMerged) {
-        mergedSegments.push(currentMerged);
-    }
-
-    return mergedSegments;
-}
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 
@@ -117,9 +81,9 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
         // }
 
         // if (params.diarization) {
-            // Merge consecutive segments with the same speaker
-            // transcriptSegments = mergeConsecutiveSpeakerSegments(transcriptSegments);
-            // mergedResult.text = transcriptSegments.map(segment => `${segment.speaker}: ${segment.text}`).join("\n\n")
+        // Merge consecutive segments with the same speaker
+        // transcriptSegments = mergeConsecutiveSpeakerSegments(transcriptSegments);
+        // mergedResult.text = transcriptSegments.map(segment => `${segment.speaker}: ${segment.text}`).join("\n\n")
         // }
 
 
