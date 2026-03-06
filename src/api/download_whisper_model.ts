@@ -1,4 +1,4 @@
-import { Commander } from "@enconvo/api"
+import { Commander, NativeEventUtils } from "@enconvo/api"
 
 export default async function main(req: Request) {
     const body: { id: string, model_id: string } = await req.json()
@@ -25,7 +25,7 @@ export default async function main(req: Request) {
     // Block with while loop until download completes
     while (!downloadCompleted) {
         // Sleep for a short time to avoid busy waiting
-        Commander.sendEvent(`download_whisper_model_${body.model_id}`, {
+        NativeEventUtils.sendEvent(`download_whisper_model_${body.model_id}`, {
             id: body.id,
             status: "downloading"
         })
@@ -38,7 +38,7 @@ export default async function main(req: Request) {
     }
     console.log("download_whisper_model_${body.model_id}", `download_whisper_model_${body.model_id}`)
 
-    Commander.sendEvent(`download_whisper_model_${body.model_id}`, {
+    NativeEventUtils.sendEvent(`download_whisper_model_${body.model_id}`, {
         id: body.id,
         status: "downloaded"
     })

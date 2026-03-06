@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.201",
+  "version": "0.0.214",
   "description": "Speech-to-Text Providers",
   "title": "Dictation Model Providers",
   "icon": "icon.png",
@@ -12,6 +12,31 @@
   "license": "MIT",
   "type": "module",
   "commands": [
+    {
+      "name": "mistral_enconvo",
+      "title": "Mistral (Enconvo Cloud )",
+      "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
+      "icon": "mistral.jpg",
+      "mode": "no-view",
+      "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
+      "commandType": "provider",
+      "preferences": [
+        {
+          "name": "modelName",
+          "title": "ModelName",
+          "description": "Speech-to-text Model [more...](https://docs.groq.com/docs/speech-to-text/models)",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Mistral Voxtral Mini (100 points per time)",
+              "value": "mistral/voxtral-mini-latest"
+            }
+          ],
+          "default": "mistral/voxtral-mini-latest"
+        }
+      ]
+    },
     {
       "name": "enconvo_cloud_plan",
       "title": "Groq (Enconvo Cloud)",
@@ -86,31 +111,6 @@
       ]
     },
     {
-      "name": "mistral_enconvo",
-      "title": "Mistral (Enconvo Cloud )",
-      "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
-      "icon": "mistral.jpg",
-      "mode": "no-view",
-      "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
-      "commandType": "provider",
-      "preferences": [
-        {
-          "name": "modelName",
-          "title": "ModelName",
-          "description": "Speech-to-text Model [more...](https://docs.groq.com/docs/speech-to-text/models)",
-          "type": "dropdown",
-          "required": false,
-          "data": [
-            {
-              "title": "Mistral Voxtral Mini (100 points per time)",
-              "value": "mistral/voxtral-mini-latest"
-            }
-          ],
-          "default": "mistral/voxtral-mini-latest"
-        }
-      ]
-    },
-    {
       "name": "enconvo",
       "title": "Microsoft (Enconvo Cloud Plan) Free",
       "description": "Enconvo Speech-to-Text Provider that allows you to use high speed online Speech-to-Text service",
@@ -166,6 +166,72 @@
             {
               "title": "Parakeet Tdt 0.6B V2",
               "value": "parakeet-tdt-0.6b-v2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "qwen",
+      "title": "Qwen ASR",
+      "description": "Alibaba's multilingual ASR powered by Qwen3-ASR, supporting ZH, EN, JA, KO and more",
+      "icon": "qwen.png",
+      "mode": "no-view",
+      "commandType": "provider",
+      "preferences": [
+        {
+          "name": "modelName",
+          "title": "Model Name",
+          "description": "The model name to use for speech recognition",
+          "type": "dropdown",
+          "required": false,
+          "default": "mlx-community/Qwen3-ASR-1.7B-8bit",
+          "data": [
+            {
+              "title": "Qwen3 ASR 1.7B 8bit",
+              "value": "mlx-community/Qwen3-ASR-1.7B-8bit"
+            }
+          ]
+        },
+        {
+          "name": "language",
+          "title": "Language",
+          "description": "The language of the audio",
+          "type": "dropdown",
+          "required": false,
+          "default": "auto",
+          "data": [
+            {
+              "title": "Auto Detect",
+              "value": "auto"
+            },
+            {
+              "title": "Chinese",
+              "value": "zh"
+            },
+            {
+              "title": "English",
+              "value": "en"
+            },
+            {
+              "title": "Japanese",
+              "value": "ja"
+            },
+            {
+              "title": "Korean",
+              "value": "ko"
+            },
+            {
+              "title": "French",
+              "value": "fr"
+            },
+            {
+              "title": "German",
+              "value": "de"
+            },
+            {
+              "title": "Spanish",
+              "value": "es"
             }
           ]
         }
