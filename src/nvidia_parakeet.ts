@@ -16,9 +16,12 @@ export class NvidiaParakeetProvider extends SpeechToTextProvider {
         const filePath = preprocessAudio(inputPath, "wav")
         // console.log("filePath", filePath, inputPath)
 
+        const customVocabulary = this.options.custom_vocabulary?.value || ""
+
         const resp = await Commander.send("fluidTranscribe", {
             file_path: filePath,
-            model_id: this.options.modelName.value || "v3"
+            model_id: this.options.modelName.value || "v3",
+            custom_vocabulary: customVocabulary
         })
 
         console.log("resp", JSON.stringify(resp, null, 2))

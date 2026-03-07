@@ -146,7 +146,7 @@
     {
       "name": "nvidia_parakeet",
       "title": "Nvidia Parakeet",
-      "description": "Nvidia Parakeet Speech-to-Text Provider that allows you to use Nvidia Parakeet",
+      "description": "NVIDIA's 600M-parameter multilingual ASR model supporting 25 European languages with automatic language detection, punctuation, capitalization, and word-level timestamps",
       "icon": "nvidia.png",
       "mode": "no-view",
       "commandType": "provider",
@@ -161,7 +161,17 @@
           "data": [
             {
               "title": "Parakeet Tdt 0.6B V3",
-              "value": "parakeet-tdt-0.6b-v3"
+              "value": "parakeet-tdt-0.6b-v3",
+              "preferences": [
+                {
+                  "name": "custom_vocabulary",
+                  "title": "Custom Vocabulary",
+                  "description": "Custom vocabulary terms to boost recognition accuracy. One term per line. Optionally add aliases with colon format: 'term: alias1, alias2'",
+                  "type": "multiline_textfield",
+                  "required": false,
+                  "default": ""
+                }
+              ]
             },
             {
               "title": "Parakeet Tdt 0.6B V2",
@@ -174,7 +184,7 @@
     {
       "name": "qwen",
       "title": "Qwen ASR",
-      "description": "Alibaba's multilingual ASR powered by Qwen3-ASR, supporting ZH, EN, JA, KO and more",
+      "description": "Alibaba's multilingual ASR powered by Qwen3-ASR, supporting language identification and speech recognition for 30 languages and 22 Chinese dialects, with state-of-the-art accuracy among open-source ASR models",
       "icon": "qwen.png",
       "mode": "no-view",
       "commandType": "provider",
