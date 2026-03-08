@@ -143,8 +143,7 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
                 while (retryCount < MAX_RETRIES) {
                     const startTime = Date.now();
                     try {
-
-
+                        // console.log('options.prompt', options)
                         const result = await this.openai.audio.transcriptions.create({
                             file: fs.createReadStream(tempFile),
                             model: modelName,

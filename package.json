@@ -162,20 +162,12 @@
             {
               "title": "Parakeet Tdt 0.6B V3",
               "value": "parakeet-tdt-0.6b-v3",
-              "preferences": [
-                {
-                  "name": "custom_vocabulary",
-                  "title": "Custom Vocabulary",
-                  "description": "Custom vocabulary terms to boost recognition accuracy. One term per line. Optionally add aliases with colon format: 'term: alias1, alias2'",
-                  "type": "multiline_textfield",
-                  "required": false,
-                  "default": ""
-                }
-              ]
+              "description": "600M-parameter multilingual ASR model supporting 25 European languages with automatic language detection, punctuation, capitalization, and word-level timestamps. Supports long audio up to 24 minutes (full attention) or 3 hours (local attention). Released under CC-BY-4.0 license."
             },
             {
               "title": "Parakeet Tdt 0.6B V2",
-              "value": "parakeet-tdt-0.6b-v2"
+              "value": "parakeet-tdt-0.6b-v2",
+              "description": "Previous version of Parakeet TDT 0.6B, English-focused ASR model based on FastConformer encoder and TDT decoder architecture with punctuation, capitalization, and timestamp support."
             }
           ]
         }
@@ -199,7 +191,8 @@
           "data": [
             {
               "title": "Qwen3 ASR 1.7B 8bit",
-              "value": "mlx-community/Qwen3-ASR-1.7B-8bit"
+              "value": "mlx-community/Qwen3-ASR-1.7B-8bit",
+              "description": "1.7B-parameter multilingual ASR model supporting 30 languages and 22 Chinese dialects with automatic language identification. Achieves state-of-the-art performance among open-source ASR models. Supports streaming/offline unified inference and long audio transcription. 8-bit quantized for efficient local inference via MLX."
             }
           ]
         },

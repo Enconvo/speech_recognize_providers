@@ -73,6 +73,7 @@ export class OpenaiProvider extends SpeechToTextProvider {
                 while (retryCount < MAX_RETRIES) {
                     const startTime = Date.now();
                     try {
+                        // console.log('options.prompt',options.prompt)
                         // Attempt transcription
                         const result = await this.openai.audio.transcriptions.create({
                             file: fs.createReadStream(tempFile),
