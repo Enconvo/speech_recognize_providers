@@ -1,5 +1,11 @@
 [
   {
+    "name": "gemini_enconvo",
+    "title": "Google Gemini (Enconvo Cloud)",
+    "description": "Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan",
+    "route": "speech_recognize_providers/gemini_enconvo"
+  },
+  {
     "name": "mistral_enconvo",
     "title": "Mistral (Enconvo Cloud )",
     "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
@@ -147,6 +153,17 @@
     "title": "download_whisper_model",
     "description": "",
     "route": "speech_recognize_providers/download_whisper_model",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "get_stt_models",
+    "title": "get_stt_models",
+    "description": "",
+    "route": "speech_recognize_providers/get_stt_models",
     "parameters": {
       "type": "object",
       "properties": {},

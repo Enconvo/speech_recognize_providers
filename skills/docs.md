@@ -4,6 +4,7 @@
 
 ## Table of Contents
 
+- [Google Gemini (Enconvo Cloud)](#gemini_enconvo)
 - [Mistral (Enconvo Cloud )](#mistral_enconvo)
 - [Groq (Enconvo Cloud)](#enconvo_cloud_plan)
 - [OpenAI (Enconvo Cloud)](#openai_enconvo)
@@ -28,6 +29,15 @@
 - [parakeet_models](#parakeet_models)
 - [download_nvidia_parakeet_model](#download_nvidia_parakeet_model)
 - [download_whisper_model](#download_whisper_model)
+- [get_stt_models](#get_stt_models)
+
+---
+
+## Google Gemini (Enconvo Cloud)
+
+**POST** `speech_recognize_providers/gemini_enconvo`
+
+Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan
 
 ---
 
@@ -216,6 +226,12 @@ get parakeet_models list
 ## download_whisper_model
 
 **POST** `speech_recognize_providers/download_whisper_model`
+
+---
+
+## get_stt_models
+
+**POST** `speech_recognize_providers/get_stt_models`
 
 ---
 

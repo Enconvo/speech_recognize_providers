@@ -30,7 +30,8 @@
           "data": [
             {
               "title": "Gemini 3.1 Flash Lite (100 points per time)",
-              "value": "google/gemini-3.1-flash-lite-preview"
+              "value": "google/gemini-3.1-flash-lite-preview",
+              "isSupportTextProcessing": true
             }
           ],
           "default": "google/gemini-3.1-flash-lite-preview"

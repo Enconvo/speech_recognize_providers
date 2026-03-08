@@ -95,8 +95,8 @@ export default async function main(req: Request) {
 
   if (extensionName === 'speech_recognize_providers') {
     outputModels.sort((a, b) => {
-      if (a.id === 'enconvo-groq-whisper-large-v3-turbo') return -1;
-      if (b.id === 'enconvo-groq-whisper-large-v3-turbo') return 1;
+      if (a.id === 'enconvo-gpt-4o-mini-transcribe') return -1;
+      if (b.id === 'enconvo-gpt-4o-mini-transcribe') return 1;
       return 0;
     });
   } else if (extensionName === 'transcription_providers') {
