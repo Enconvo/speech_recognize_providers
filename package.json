@@ -13,6 +13,39 @@
   "type": "module",
   "commands": [
     {
+      "name": "gemini_enconvo",
+      "title": "Google Gemini (Enconvo Cloud)",
+      "description": "Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan",
+      "icon": "gemini.png",
+      "mode": "no-view",
+      "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
+      "commandType": "provider",
+      "preferences": [
+        {
+          "name": "modelName",
+          "title": "ModelName",
+          "description": "Speech-to-text Model",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Gemini 3.1 Flash Lite (100 points per time)",
+              "value": "google/gemini-3.1-flash-lite-preview"
+            }
+          ],
+          "default": "google/gemini-3.1-flash-lite-preview"
+        },
+        {
+          "name": "prompt",
+          "title": "Prompt",
+          "description": "Provide context or specify how to spell unfamiliar words (limited to 224 tokens).",
+          "type": "textfield",
+          "default": "",
+          "visibility": "hidden"
+        }
+      ]
+    },
+    {
       "name": "mistral_enconvo",
       "title": "Mistral (Enconvo Cloud )",
       "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
@@ -50,7 +83,8 @@
           "title": "Prompt",
           "description": "Provide context or specify how to spell unfamiliar words (limited to 224 tokens).",
           "type": "textfield",
-          "default": ""
+          "default": "",
+          "hidden": true
         },
         {
           "name": "speechRecognitionLanguage",
@@ -59,7 +93,8 @@
           "type": "dropdown",
           "required": false,
           "default": "auto",
-          "dataProxy": "translate|languages"
+          "dataProxy": "translate|languages",
+          "hidden": true
         },
         {
           "name": "modelName",
@@ -553,6 +588,46 @@
       ]
     },
     {
+      "name": "gemini",
+      "title": "Google Gemini",
+      "description": "Google Gemini Speech-to-Text Provider that uses Gemini's multimodal audio understanding for transcription, supporting up to 9.5 hours of audio",
+      "icon": "gemini.png",
+      "mode": "no-view",
+      "commandType": "provider",
+      "preferences": [
+        {
+          "name": "credentials",
+          "description": "The key management provider to use",
+          "type": "extension",
+          "required": false,
+          "default": "google_gemini",
+          "extensionType": "credentials-provider",
+          "extensionFilter": {
+            "targetCommands": [
+              "credentials|gemini"
+            ]
+          },
+          "title": "Credential Provider"
+        },
+        {
+          "name": "modelName",
+          "title": "Model Name",
+          "description": "The Gemini model to use for speech recognition",
+          "type": "dropdown",
+          "required": false,
+          "default": "gemini-3.1-flash-lite-preview",
+          "data": [
+            {
+              "title": "Gemini 3.1 Flash Lite",
+              "value": "gemini-3.1-flash-lite-preview",
+              "description": "Most cost-efficient multimodal model with fastest performance for high-frequency, lightweight tasks. Supports audio transcription, structured outputs, and thinking. 1M token input context window.",
+              "isSupportTextProcessing": true
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "azure_voices",
       "title": "azure_voices",
       "description": "get azure_voices list",
@@ -639,6 +714,7 @@
   "dependencies": {
     "@deepgram/sdk": "^4.11.3",
     "@enconvo/api": "link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api",
+    "@google/genai": "^1.44.0",
     "@huggingface/hub": "^2.4.0",
     "@modelcontextprotocol/sdk": "^1.16.0",
     "assemblyai": "^4.22.1",

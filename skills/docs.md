@@ -17,6 +17,7 @@
 - [Groq Whisper](#groq)
 - [ElevenLabs (Scribe)](#elevenlab)
 - [Local Whisper (Beta)](#whisperOffline)
+- [Google Gemini](#gemini)
 - [azure_voices](#azure_voices)
 - [whisper_languages](#whisper_languages)
 - [azure_speech_regions](#azure_speech_regions)
@@ -131,6 +132,14 @@ ElevenLabs Speech-to-Text Provider that allows you to use [ElevenLabs](https://e
 **POST** `speech_recognize_providers/whisperOffline`
 
 Local Whisper Speech-to-Text Provider that runs on your local machine
+
+---
+
+## Google Gemini
+
+**POST** `speech_recognize_providers/gemini`
+
+Google Gemini Speech-to-Text Provider that uses Gemini's multimodal audio understanding for transcription, supporting up to 9.5 hours of audio
 
 ---
 

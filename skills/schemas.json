@@ -78,6 +78,12 @@
     "route": "speech_recognize_providers/whisperOffline"
   },
   {
+    "name": "gemini",
+    "title": "Google Gemini",
+    "description": "Google Gemini Speech-to-Text Provider that uses Gemini's multimodal audio understanding for transcription, supporting up to 9.5 hours of audio",
+    "route": "speech_recognize_providers/gemini"
+  },
+  {
     "name": "azure_voices",
     "title": "azure_voices",
     "description": "get azure_voices list",

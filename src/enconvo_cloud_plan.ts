@@ -5,6 +5,7 @@ import path from "path"
 import OpenAI from "openai";
 import { env } from "process";
 import { AudioResponseFormat } from "openai/resources";
+import { GeminiProvider } from "./gemini.ts";
 
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
@@ -34,6 +35,14 @@ export class EnconvoCloudPlanProvider extends SpeechToTextProvider {
     }
 
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
+        const [provider] = (this.options.modelName?.value || "").split("/");
+
+        console.log('provider', provider)
+        if (provider === "google") {
+            const geminiProvider = new GeminiProvider({ ...this.options, useEnconvoCloudPlan: true });
+            return geminiProvider.audioToText(params);
+        }
+
         let inputPath = params.audioFilePath.replace("file://", "")
 
         const chunkSize = 24.5 * 1024 * 1024
