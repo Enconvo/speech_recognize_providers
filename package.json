@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.214",
+  "version": "0.0.216",
   "description": "Speech-to-Text Providers",
   "title": "Dictation Model Providers",
   "icon": "icon.png",
@@ -13,10 +13,10 @@
   "type": "module",
   "commands": [
     {
-      "name": "gemini_enconvo",
-      "title": "Google Gemini (Enconvo Cloud)",
-      "description": "Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan",
-      "icon": "gemini.png",
+      "name": "openai_enconvo",
+      "title": "OpenAI (Enconvo Cloud)",
+      "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
+      "icon": "openai.png",
       "mode": "no-view",
       "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
       "commandType": "provider",
@@ -24,25 +24,20 @@
         {
           "name": "modelName",
           "title": "ModelName",
-          "description": "Speech-to-text Model",
+          "description": "Speech-to-text Model [more...](https://docs.groq.com/docs/speech-to-text/models)",
           "type": "dropdown",
           "required": false,
           "data": [
             {
-              "title": "Gemini 3.1 Flash Lite (100 points per time)",
-              "value": "google/gemini-3.1-flash-lite-preview",
-              "isSupportTextProcessing": true
+              "title": "OpenAI gpt-4o-mini-transcribe (100 points per time)",
+              "value": "openai/gpt-4o-mini-transcribe"
+            },
+            {
+              "title": "OpenAI gpt-4o-transcribe (200 points per time)",
+              "value": "openai/gpt-4o-transcribe"
             }
           ],
-          "default": "google/gemini-3.1-flash-lite-preview"
-        },
-        {
-          "name": "prompt",
-          "title": "Prompt",
-          "description": "Provide context or specify how to spell unfamiliar words (limited to 224 tokens).",
-          "type": "textfield",
-          "default": "",
-          "visibility": "hidden"
+          "default": "openai/gpt-4o-mini-transcribe"
         }
       ]
     },
@@ -118,10 +113,10 @@
       ]
     },
     {
-      "name": "openai_enconvo",
-      "title": "OpenAI (Enconvo Cloud)",
-      "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
-      "icon": "openai.png",
+      "name": "gemini_enconvo",
+      "title": "Google Gemini (Enconvo Cloud)",
+      "description": "Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan",
+      "icon": "gemini.png",
       "mode": "no-view",
       "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
       "commandType": "provider",
@@ -129,20 +124,25 @@
         {
           "name": "modelName",
           "title": "ModelName",
-          "description": "Speech-to-text Model [more...](https://docs.groq.com/docs/speech-to-text/models)",
+          "description": "Speech-to-text Model",
           "type": "dropdown",
           "required": false,
           "data": [
             {
-              "title": "OpenAI gpt-4o-mini-transcribe (100 points per time)",
-              "value": "openai/gpt-4o-mini-transcribe"
-            },
-            {
-              "title": "OpenAI gpt-4o-transcribe (200 points per time)",
-              "value": "openai/gpt-4o-transcribe"
+              "title": "Gemini 3.1 Flash Lite (100 points per time)",
+              "value": "google/gemini-3.1-flash-lite-preview",
+              "isSupportTextProcessing": true
             }
           ],
-          "default": "openai/gpt-4o-mini-transcribe"
+          "default": "google/gemini-3.1-flash-lite-preview"
+        },
+        {
+          "name": "prompt",
+          "title": "Prompt",
+          "description": "Provide context or specify how to spell unfamiliar words (limited to 224 tokens).",
+          "type": "textfield",
+          "default": "",
+          "visibility": "hidden"
         }
       ]
     },

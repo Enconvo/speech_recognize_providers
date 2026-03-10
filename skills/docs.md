@@ -4,10 +4,10 @@
 
 ## Table of Contents
 
-- [Google Gemini (Enconvo Cloud)](#gemini_enconvo)
+- [OpenAI (Enconvo Cloud)](#openai_enconvo)
 - [Mistral (Enconvo Cloud )](#mistral_enconvo)
 - [Groq (Enconvo Cloud)](#enconvo_cloud_plan)
-- [OpenAI (Enconvo Cloud)](#openai_enconvo)
+- [Google Gemini (Enconvo Cloud)](#gemini_enconvo)
 - [Microsoft (Enconvo Cloud Plan) Free](#enconvo)
 - [Nvidia Parakeet](#nvidia_parakeet)
 - [Qwen ASR](#qwen)
@@ -33,11 +33,11 @@
 
 ---
 
-## Google Gemini (Enconvo Cloud)
+## OpenAI (Enconvo Cloud)
 
-**POST** `speech_recognize_providers/gemini_enconvo`
+**POST** `speech_recognize_providers/openai_enconvo`
 
-Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan
+Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service
 
 ---
 
@@ -57,11 +57,11 @@ Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/d
 
 ---
 
-## OpenAI (Enconvo Cloud)
+## Google Gemini (Enconvo Cloud)
 
-**POST** `speech_recognize_providers/openai_enconvo`
+**POST** `speech_recognize_providers/gemini_enconvo`
 
-Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service
+Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan
 
 ---
 

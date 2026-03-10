@@ -20,6 +20,7 @@ export interface SpeechToTextModel {
   size?: string; // Model size in MB, e.g. "496 MB" (only for local models)
   is_valid?: boolean;
   is_default?: boolean;
+  model_status?: string;
 }
 
 // Filter options for querying models

@@ -8,6 +8,19 @@ export default function main(options: SpeechToTextProvider.SpeechToTextOptions) 
 
 export class QwenASRProvider extends SpeechToTextProvider {
 
+    async preload(): Promise<void> {
+        const resp = await fetch(`${environment.localServerBaseUrl}/mlx_manage/mlx_audio/load_model`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model_id: this.options.modelName?.value || "mlx-community/Qwen3-ASR-1.7B-8bit",
+                category: "stt"
+            })
+        })
+        console.log("preload stt", resp)
+    }
+
+
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
         const inputPath = params.audioFilePath.replace("file://", "")
         const filePath = preprocessAudio(inputPath, "wav")

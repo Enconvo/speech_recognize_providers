@@ -1,9 +1,9 @@
 [
   {
-    "name": "gemini_enconvo",
-    "title": "Google Gemini (Enconvo Cloud)",
-    "description": "Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan",
-    "route": "speech_recognize_providers/gemini_enconvo"
+    "name": "openai_enconvo",
+    "title": "OpenAI (Enconvo Cloud)",
+    "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
+    "route": "speech_recognize_providers/openai_enconvo"
   },
   {
     "name": "mistral_enconvo",
@@ -18,10 +18,10 @@
     "route": "speech_recognize_providers/enconvo_cloud_plan"
   },
   {
-    "name": "openai_enconvo",
-    "title": "OpenAI (Enconvo Cloud)",
-    "description": "Speech-to-Text Provider that allows you to use [Groq](https://console.groq.com/docs/speech-text)'s online Speech-to-Text service",
-    "route": "speech_recognize_providers/openai_enconvo"
+    "name": "gemini_enconvo",
+    "title": "Google Gemini (Enconvo Cloud)",
+    "description": "Speech-to-Text Provider powered by Google Gemini via Enconvo Cloud Plan",
+    "route": "speech_recognize_providers/gemini_enconvo"
   },
   {
     "name": "enconvo",

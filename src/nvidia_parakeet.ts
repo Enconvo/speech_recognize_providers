@@ -1,5 +1,5 @@
 import { Commander, SpeechToTextProvider } from "@enconvo/api";
-import { getDuration, preprocessAudio } from "./audio_util.ts";
+import { preprocessAudio } from "./audio_util.ts";
 
 export default function main(options: SpeechToTextProvider.SpeechToTextOptions) {
 

@@ -73,10 +73,11 @@ export default async function main(req: Request) {
       const isValidResult = await fetch(`${environment.localServerBaseUrl}/mlx_manage/mlx_audio/check_model_status`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model_id: model.model_id }),
+        body: JSON.stringify({ model_id: model.model_id, category: "stt" }),
       })
       const resp = await isValidResult.json()
-      model.is_valid = resp.status === "downloaded";
+      model.is_valid = resp.status === "downloaded" || resp.status === "loaded";
+      model.model_status = resp.status;
       console.log("check_model_status resp", resp, model.is_valid)
     } else if (model.provider_id === "nvidia_parakeet") {
       const isValidResult = await Commander.send("fluidIsModelValid", {
