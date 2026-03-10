@@ -9,8 +9,8 @@ export default async function main(req: Request) {
     let downloadResult: any = null
     let downloadError: any = null
 
-    // Start the download
-    Commander.send("whisperKitDownloadModel", {
+    // Start the download and load into memory
+    Commander.send("whisperKitPreloadModel", {
         model_id: body.model_id
     }).then(resp => {
         console.log("resp", resp)
@@ -22,7 +22,7 @@ export default async function main(req: Request) {
         downloadCompleted = true
     })
 
-    // Block with while loop until download completes
+    // Block with while loop until preload completes
     while (!downloadCompleted) {
         // Sleep for a short time to avoid busy waiting
         NativeEventUtils.sendEvent(`download_whisper_model_${body.model_id}`, {
@@ -36,11 +36,10 @@ export default async function main(req: Request) {
     if (downloadError) {
         throw new Error(`Download failed: ${downloadError}`)
     }
-    console.log("download_whisper_model_${body.model_id}", `download_whisper_model_${body.model_id}`)
 
     NativeEventUtils.sendEvent(`download_whisper_model_${body.model_id}`, {
         id: body.id,
-        status: "downloaded"
+        status: "loaded"
     })
 
     return "success"

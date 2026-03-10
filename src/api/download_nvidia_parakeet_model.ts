@@ -9,8 +9,8 @@ export default async function main(req: Request) {
     let downloadResult: any = null
     let downloadError: any = null
 
-    // Start the download
-    Commander.send("fluidDownloadModel", {
+    // Start the download and load into memory
+    Commander.send("fluidPreloadModel", {
         model_id: body.model_id
     }).then(resp => {
         console.log("resp", resp)
@@ -22,7 +22,7 @@ export default async function main(req: Request) {
         downloadCompleted = true
     })
 
-    // Block with while loop until download completes
+    // Block with while loop until preload completes
     while (!downloadCompleted) {
         // Sleep for a short time to avoid busy waiting
         NativeEventUtils.sendEvent(`download_nvidia_parakeet_model_${body.model_id}`, {
@@ -39,7 +39,7 @@ export default async function main(req: Request) {
 
     NativeEventUtils.sendEvent(`download_nvidia_parakeet_model_${body.model_id}`, {
         id: body.id,
-        status: "downloaded"
+        status: "loaded"
     })
 
     return "success"

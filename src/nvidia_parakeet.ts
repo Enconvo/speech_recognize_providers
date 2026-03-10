@@ -8,7 +8,11 @@ export default function main(options: SpeechToTextProvider.SpeechToTextOptions) 
 
 export class NvidiaParakeetProvider extends SpeechToTextProvider {
 
-
+    async preload(): Promise<void> {
+        await Commander.send("fluidPreloadModel", {
+            model_id: this.options.modelName?.value || "parakeet-tdt-0.6b-v3",
+        })
+    }
 
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
         const inputPath = params.audioFilePath.replace("file://", "")

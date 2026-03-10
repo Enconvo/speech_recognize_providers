@@ -14,6 +14,12 @@ export class EnconvoProvider extends SpeechToTextProvider {
         super(options)
     }
 
+    async preload(): Promise<void> {
+        await Commander.send("whisperKitPreloadModel", {
+            model_id: this.options.modelName?.value || "",
+        })
+    }
+
     protected async _audioToText(params: SpeechToTextProvider.AudioToTextParams): Promise<SpeechToTextProvider.SpeechToTextResult> {
         const inputPath = params.audioFilePath.replace("file://", "")
 

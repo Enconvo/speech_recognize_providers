@@ -84,11 +84,13 @@ export default async function main(req: Request) {
         model_id: model.model_id,
       })
       model.is_valid = isValidResult.data.is_valid;
+      model.model_status = isValidResult.data.status;
     } else if (model.provider_id === "whisperOffline") {
       const isValidResult = await Commander.send("whisperKitIsModelValid", {
         model_id: model.model_id,
       })
       model.is_valid = isValidResult.data.is_valid;
+      model.model_status = isValidResult.data.status;
     }
     model.is_default = model.provider_id === providerId && model.model_id === modelName;
     return model
