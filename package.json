@@ -1,7 +1,7 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.216",
+  "version": "0.0.226",
   "description": "Speech-to-Text Providers",
   "title": "Dictation Model Providers",
   "icon": "icon.png",
@@ -39,7 +39,8 @@
           ],
           "default": "openai/gpt-4o-mini-transcribe"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "mistral_enconvo",
@@ -64,7 +65,8 @@
           ],
           "default": "mistral/voxtral-mini-latest"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "enconvo_cloud_plan",
@@ -110,7 +112,8 @@
           ],
           "default": "groq/whisper-large-v3-turbo"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "gemini_enconvo",
@@ -144,7 +147,8 @@
           "default": "",
           "visibility": "hidden"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "enconvo",
@@ -177,7 +181,8 @@
           ],
           "default": "azure/azure"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "nvidia_parakeet",
@@ -207,7 +212,8 @@
             }
           ]
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "qwen",
@@ -223,8 +229,23 @@
           "description": "The model name to use for speech recognition",
           "type": "dropdown",
           "required": false,
-          "default": "mlx-community/Qwen3-ASR-1.7B-8bit",
+          "default": "mlx-community/Qwen3-ASR-0.6B-4bit",
           "data": [
+            {
+              "title": "Qwen3 ASR 0.6B 4bit",
+              "value": "mlx-community/Qwen3-ASR-0.6B-4bit",
+              "description": "0.6B-parameter lightweight multilingual ASR model with 4-bit quantization for minimal memory usage. Supports 30 languages and 22 Chinese dialects."
+            },
+            {
+              "title": "Qwen3 ASR 0.6B 8bit",
+              "value": "mlx-community/Qwen3-ASR-0.6B-8bit",
+              "description": "0.6B-parameter lightweight multilingual ASR model with 8-bit quantization. Supports 30 languages and 22 Chinese dialects. Faster inference with smaller memory footprint."
+            },
+            {
+              "title": "Qwen3 ASR 1.7B 4bit",
+              "value": "mlx-community/Qwen3-ASR-1.7B-4bit",
+              "description": "1.7B-parameter multilingual ASR model with 4-bit quantization for reduced memory usage. Supports 30 languages and 22 Chinese dialects with automatic language identification."
+            },
             {
               "title": "Qwen3 ASR 1.7B 8bit",
               "value": "mlx-community/Qwen3-ASR-1.7B-8bit",
@@ -274,7 +295,8 @@
             }
           ]
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "azure",
@@ -321,7 +343,8 @@
           ],
           "default": "azure"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "assembly_ai_enconvo",
@@ -346,7 +369,8 @@
           },
           "title": "Credential Provider"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "assembly_ai",
@@ -393,7 +417,8 @@
           ],
           "default": "universal"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "deepgram",
@@ -440,7 +465,8 @@
           "dataProxy": "speech_recognize_providers|deepgram_languages",
           "default": "multi"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "groq",
@@ -498,7 +524,8 @@
           ],
           "default": "whisper-large-v3-turbo"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "elevenlab",
@@ -545,7 +572,8 @@
           ],
           "default": "scribe_v1"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "whisperOffline",
@@ -586,7 +614,8 @@
           "default": "auto",
           "dataProxy": "speech_recognize_providers|whisper_languages"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "gemini",
@@ -626,7 +655,8 @@
             }
           ]
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "azure_voices",
@@ -635,7 +665,8 @@
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
-      "mode": "no-view"
+      "mode": "no-view",
+      "private": true
     },
     {
       "name": "whisper_languages",
@@ -644,7 +675,8 @@
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
-      "mode": "no-view"
+      "mode": "no-view",
+      "private": true
     },
     {
       "name": "azure_speech_regions",
@@ -653,7 +685,8 @@
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
-      "mode": "no-view"
+      "mode": "no-view",
+      "private": true
     },
     {
       "name": "youdao_languages",
@@ -662,7 +695,8 @@
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
-      "mode": "no-view"
+      "mode": "no-view",
+      "private": true
     },
     {
       "name": "deepgram_languages",
@@ -682,7 +716,8 @@
           "default": "nova-3",
           "defaultProxy": "speech_recognize_providers|deepgram"
         }
-      ]
+      ],
+      "private": true
     },
     {
       "name": "assemblyai_languages",
@@ -691,7 +726,8 @@
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
-      "mode": "no-view"
+      "mode": "no-view",
+      "private": true
     },
     {
       "name": "deepgram_models",
@@ -700,7 +736,8 @@
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
-      "mode": "no-view"
+      "mode": "no-view",
+      "private": true
     },
     {
       "name": "parakeet_models",
@@ -709,12 +746,13 @@
       "icon": "icon.png",
       "commandType": "function_command",
       "showInCommandList": false,
-      "mode": "no-view"
+      "mode": "no-view",
+      "private": true
     }
   ],
   "dependencies": {
     "@deepgram/sdk": "^4.11.3",
-    "@enconvo/api": "link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api",
+    "@enconvo/api": "link:../../enconvo.nodejs/enconvo_api",
     "@google/genai": "^1.44.0",
     "@huggingface/hub": "^2.4.0",
     "@modelcontextprotocol/sdk": "^1.16.0",
@@ -740,8 +778,8 @@
     "lint:fix": "npm run lint --fix",
     "format": "prettier --write \"**/*.ts\"",
     "format:check": "prettier --list-different \"**/*.ts\"",
-    "build": "enconvo",
-    "dev": "enconvo --dev"
+    "build": "enconvo dev",
+    "dev": "enconvo dev --dev"
   },
   "minAppVersion": "1.8.8"
 }

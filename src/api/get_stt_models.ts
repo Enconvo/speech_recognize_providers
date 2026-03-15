@@ -4,10 +4,20 @@ import {
   SpeechToTextModelFilter,
 } from "../data/stt_models.ts";
 
+/** Get STT models request params */
 interface GetSTTModelsRequestOptions extends RequestOptions {
+  /** Filter for models that support speaker diarization */
   diarization?: boolean;
+  /** Extension name to load models for @default "speech_recognize_providers" */
   extensionName?: string;
 }
+
+/**
+ * Get available speech-to-text models with filtering and status
+ * @param {Request} req - Request object, body is {@link GetSTTModelsRequestOptions}
+ * @returns List of STT models with provider icons, validation status, and default selection
+ * @private
+ */
 export default async function main(req: Request) {
   const body: GetSTTModelsRequestOptions = await req.json();
   // console.log("body", body)

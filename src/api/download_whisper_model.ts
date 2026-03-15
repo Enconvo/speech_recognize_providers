@@ -1,7 +1,21 @@
 import { Commander, NativeEventUtils } from "@enconvo/api"
 
+/** Download Whisper model request params */
+interface DownloadWhisperModelParams {
+    /** Unique identifier for tracking the download */
+    id: string
+    /** WhisperKit model ID to download */
+    model_id: string
+}
+
+/**
+ * Download and preload a WhisperKit STT model into memory
+ * @param {Request} req - Request object, body is {@link DownloadWhisperModelParams}
+ * @returns Success string on completion
+ * @private
+ */
 export default async function main(req: Request) {
-    const body: { id: string, model_id: string } = await req.json()
+    const body: DownloadWhisperModelParams = await req.json()
     console.log("body", body.model_id)
 
     // Use a flag to track download completion

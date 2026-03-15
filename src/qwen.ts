@@ -29,12 +29,10 @@ export class QwenASRProvider extends SpeechToTextProvider {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                arguments: {
-                    file_path: filePath,
-                    language: this.options.language?.value || "auto",
-                    verbose: false,
-                    model_id: this.options.modelName?.value || "mlx-community/Qwen3-ASR-1.7B-8bit"
-                }
+                file_path: filePath,
+                language: this.options.language?.value || "auto",
+                verbose: false,
+                model_id: this.options.modelName?.value || "mlx-community/Qwen3-ASR-1.7B-8bit"
             })
         })
 

@@ -12,7 +12,7 @@ importers:
         specifier: ^4.11.3
         version: 4.11.3
       '@enconvo/api':
-        specifier: link:/Users/ysnows/Documents/Project/enconvo.nodejs/enconvo_api
+        specifier: link:../../enconvo.nodejs/enconvo_api
         version: link:../../enconvo.nodejs/enconvo_api
       '@google/genai':
         specifier: ^1.44.0

@@ -1,7 +1,21 @@
 import { Commander, NativeEventUtils } from "@enconvo/api"
 
+/** Download Nvidia Parakeet model request params */
+interface DownloadNvidiaParakeetModelParams {
+    /** Unique identifier for tracking the download */
+    id: string
+    /** HuggingFace model ID for the Parakeet model */
+    model_id: string
+}
+
+/**
+ * Download and preload an Nvidia Parakeet STT model into memory
+ * @param {Request} req - Request object, body is {@link DownloadNvidiaParakeetModelParams}
+ * @returns Success string on completion
+ * @private
+ */
 export default async function main(req: Request) {
-    const body: { id: string, model_id: string } = await req.json()
+    const body: DownloadNvidiaParakeetModelParams = await req.json()
     console.log("body", body.model_id)
 
     // Use a flag to track download completion
