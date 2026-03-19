@@ -1,8 +1,8 @@
 {
   "$schema": "https://enconvo.com/schemas/extension.json",
   "name": "speech_recognize_providers",
-  "version": "0.0.226",
-  "description": "Speech-to-Text Providers",
+  "version": "0.0.227",
+  "description": "Real-time dictation speech-to-text providers supporting 15+ services including Groq Whisper, OpenAI, Deepgram, AssemblyAI, ElevenLabs, Google Gemini, Microsoft Azure, and local models (Whisper, NVIDIA Parakeet, Qwen ASR).",
   "title": "Dictation Model Providers",
   "icon": "icon.png",
   "author": "EnconvoAI",
@@ -20,6 +20,7 @@
       "mode": "no-view",
       "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "modelName",
@@ -30,11 +31,33 @@
           "data": [
             {
               "title": "OpenAI gpt-4o-mini-transcribe (100 points per time)",
-              "value": "openai/gpt-4o-mini-transcribe"
+              "value": "openai/gpt-4o-mini-transcribe",
+              "id": "enconvo-gpt-4o-mini-transcribe",
+              "description": "Powered by GPT-4o-Mini-Transcribe via Enconvo Cloud Plan - high-quality transcription with fast cloud processing.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_enconvo_cloud": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             },
             {
               "title": "OpenAI gpt-4o-transcribe (200 points per time)",
-              "value": "openai/gpt-4o-transcribe"
+              "value": "openai/gpt-4o-transcribe",
+              "id": "enconvo-gpt-4o-transcribe",
+              "description": "Powered by GPT-4o-Transcribe via Enconvo Cloud Plan - high-quality transcription with fast cloud processing.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_enconvo_cloud": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             }
           ],
           "default": "openai/gpt-4o-mini-transcribe"
@@ -50,6 +73,7 @@
       "mode": "no-view",
       "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "modelName",
@@ -60,7 +84,18 @@
           "data": [
             {
               "title": "Mistral Voxtral Mini (100 points per time)",
-              "value": "mistral/voxtral-mini-latest"
+              "value": "mistral/voxtral-mini-latest",
+              "id": "enconvo-mistral-voxtral-mini-latest",
+              "description": "Powered by Mistral Voxtral Mini Latest via Enconvo Cloud Plan - high-quality transcription with fast cloud processing.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_enconvo_cloud": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             }
           ],
           "default": "mistral/voxtral-mini-latest"
@@ -75,6 +110,7 @@
       "icon": "groq.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "prompt",
@@ -103,11 +139,33 @@
           "data": [
             {
               "title": "Whisper Large V3 Turbo (100 points per time)",
-              "value": "groq/whisper-large-v3-turbo"
+              "value": "groq/whisper-large-v3-turbo",
+              "id": "enconvo-groq-whisper-large-v3-turbo",
+              "description": "Powered by Groq Whisper Large V3 Turbo via Enconvo Cloud Plan - high-quality transcription with fast cloud processing.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_enconvo_cloud": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             },
             {
               "title": "whisper-large-v3 (200 points per time)",
-              "value": "groq/whisper-large-v3"
+              "value": "groq/whisper-large-v3",
+              "id": "enconvo-groq-whisper-large-v3",
+              "description": "Powered by Groq Whisper Large V3 via Enconvo Cloud Plan - high accuracy transcription for multilingual audio.",
+              "accuracy": 5,
+              "speed": 4,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_enconvo_cloud": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             }
           ],
           "default": "groq/whisper-large-v3-turbo"
@@ -123,6 +181,7 @@
       "mode": "no-view",
       "targetCommand": "speech_recognize_providers|enconvo_cloud_plan",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "modelName",
@@ -134,7 +193,18 @@
             {
               "title": "Gemini 3.1 Flash Lite (100 points per time)",
               "value": "google/gemini-3.1-flash-lite-preview",
-              "isSupportTextProcessing": true
+              "id": "enconvo-gemini-3.1-flash-lite",
+              "description": "Most cost-efficient multimodal model with fastest performance for high-frequency, lightweight tasks. Supports audio transcription, structured outputs, and thinking. 1M token input context window.",
+              "isSupportTextProcessing": true,
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_enconvo_cloud": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             }
           ],
           "default": "google/gemini-3.1-flash-lite-preview"
@@ -157,6 +227,7 @@
       "icon": "enconvo.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "speechRecognitionLanguage",
@@ -176,7 +247,20 @@
           "data": [
             {
               "title": "Microsoft Azure",
-              "value": "azure/azure"
+              "value": "azure/azure",
+              "id": "enconvo-azure",
+              "description": "Enconvo Speech-to-Text Provider that allows you to use high speed online Speech-to-Text service powered by Microsoft Azure.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": true,
+              "is_online": true,
+              "is_enconvo_cloud": true,
+              "tags": [
+                "Free"
+              ],
+              "supports_punctuation": false,
+              "supports_captions": false
             }
           ],
           "default": "azure/azure"
@@ -191,6 +275,7 @@
       "icon": "nvidia.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "modelName",
@@ -203,12 +288,36 @@
             {
               "title": "Parakeet Tdt 0.6B V3",
               "value": "parakeet-tdt-0.6b-v3",
-              "description": "600M-parameter multilingual ASR model supporting 25 European languages with automatic language detection, punctuation, capitalization, and word-level timestamps. Supports long audio up to 24 minutes (full attention) or 3 hours (local attention). Released under CC-BY-4.0 license."
+              "id": "nvidia-parakeet-tdt-0.6b-v3",
+              "description": "Ultra-fast transcription powered by NVIDIA FastConformer. Optimized for conversational speech and voice commands.",
+              "accuracy": 6,
+              "speed": 6,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [
+                "Best for Multilingual"
+              ],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "496 MB"
             },
             {
               "title": "Parakeet Tdt 0.6B V2",
               "value": "parakeet-tdt-0.6b-v2",
-              "description": "Previous version of Parakeet TDT 0.6B, English-focused ASR model based on FastConformer encoder and TDT decoder architecture with punctuation, capitalization, and timestamp support."
+              "id": "nvidia-parakeet-tdt-0.6b-v2",
+              "description": "Ultra-fast English-only transcription powered by NVIDIA FastConformer V2. Optimized for English dictation and voice commands.",
+              "accuracy": 6,
+              "speed": 6,
+              "language": "english",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [
+                "Best for English"
+              ],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "496 MB"
             }
           ]
         }
@@ -222,6 +331,7 @@
       "icon": "qwen.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "modelName",
@@ -234,22 +344,62 @@
             {
               "title": "Qwen3 ASR 0.6B 4bit",
               "value": "mlx-community/Qwen3-ASR-0.6B-4bit",
-              "description": "0.6B-parameter lightweight multilingual ASR model with 4-bit quantization for minimal memory usage. Supports 30 languages and 22 Chinese dialects."
+              "id": "qwen-asr-0.6b-4bit",
+              "description": "Alibaba's lightweight multilingual ASR powered by Qwen3-ASR 0.6B with 4-bit quantization for minimal memory usage.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "0.4 GB"
             },
             {
               "title": "Qwen3 ASR 0.6B 8bit",
               "value": "mlx-community/Qwen3-ASR-0.6B-8bit",
-              "description": "0.6B-parameter lightweight multilingual ASR model with 8-bit quantization. Supports 30 languages and 22 Chinese dialects. Faster inference with smaller memory footprint."
+              "id": "qwen-asr-0.6b-8bit",
+              "description": "Alibaba's lightweight multilingual ASR powered by Qwen3-ASR 0.6B, supporting ZH, EN, JA, KO and more.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "0.6 GB"
             },
             {
               "title": "Qwen3 ASR 1.7B 4bit",
               "value": "mlx-community/Qwen3-ASR-1.7B-4bit",
-              "description": "1.7B-parameter multilingual ASR model with 4-bit quantization for reduced memory usage. Supports 30 languages and 22 Chinese dialects with automatic language identification."
+              "id": "qwen-asr-1.7b-4bit",
+              "description": "Alibaba's multilingual ASR powered by Qwen3-ASR with 4-bit quantization for reduced memory usage.",
+              "accuracy": 5,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "1.0 GB"
             },
             {
               "title": "Qwen3 ASR 1.7B 8bit",
               "value": "mlx-community/Qwen3-ASR-1.7B-8bit",
-              "description": "1.7B-parameter multilingual ASR model supporting 30 languages and 22 Chinese dialects with automatic language identification. Achieves state-of-the-art performance among open-source ASR models. Supports streaming/offline unified inference and long audio transcription. 8-bit quantized for efficient local inference via MLX."
+              "id": "qwen-asr",
+              "description": "Alibaba's multilingual ASR powered by Qwen3-ASR, supporting ZH, EN, JA, KO and more.",
+              "accuracy": 5,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "1.7 GB"
             }
           ]
         },
@@ -305,6 +455,7 @@
       "icon": "azure.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "credentials",
@@ -338,7 +489,18 @@
           "data": [
             {
               "title": "Microsoft Azure",
-              "value": "azure"
+              "value": "azure",
+              "id": "azure",
+              "description": "Microsoft Speech-to-Text Provider that allows you to use Microsoft Azure's online Speech-to-Text service.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_bring_your_own_key": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             }
           ],
           "default": "azure"
@@ -353,6 +515,7 @@
       "icon": "assemblyai.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "targetCommand": "speech_recognize_providers|assembly_ai",
       "preferences": [
         {
@@ -368,6 +531,34 @@
             ]
           },
           "title": "Credential Provider"
+        },
+        {
+          "name": "modelName",
+          "title": "Model Name",
+          "description": "The model name to use for speech recognition",
+          "type": "dropdown",
+          "required": false,
+          "data": [
+            {
+              "title": "Universal",
+              "value": "universal",
+              "id": "assembly-ai-universal-enconvo-cloud",
+              "description": "Powered by Assembly AI Universal - real-time dictation with excellent accuracy. Multilingual optimized version.",
+              "accuracy": 4,
+              "speed": 4,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_enconvo_cloud": true,
+              "is_Speaker_Diarization": true,
+              "tags": [
+                "Most Accurate"
+              ],
+              "supports_punctuation": true,
+              "supports_captions": false
+            }
+          ],
+          "default": "universal"
         }
       ],
       "private": true
@@ -379,6 +570,7 @@
       "icon": "assemblyai.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "credentials",
@@ -412,7 +604,21 @@
           "data": [
             {
               "title": "Universal",
-              "value": "universal"
+              "value": "universal",
+              "id": "assembly-ai-universal",
+              "description": "Powered by Assembly AI Universal - real-time dictation with excellent accuracy. Multilingual optimized version.",
+              "accuracy": 4,
+              "speed": 4,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_bring_your_own_key": true,
+              "is_Speaker_Diarization": true,
+              "tags": [
+                "Most Accurate"
+              ],
+              "supports_punctuation": true,
+              "supports_captions": false
             }
           ],
           "default": "universal"
@@ -427,6 +633,7 @@
       "icon": "deepgram.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "credentials",
@@ -452,7 +659,20 @@
           "data": [
             {
               "title": "Nova-3",
-              "value": "nova-3"
+              "value": "nova-3",
+              "id": "deepgram-nova-3",
+              "description": "Powered by Deepgram Nova-3 - real-time dictation with excellent accuracy. Multilingual optimized version.",
+              "accuracy": 5,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_bring_your_own_key": true,
+              "tags": [
+                "Fastest"
+              ],
+              "supports_punctuation": true,
+              "supports_captions": false
             }
           ]
         },
@@ -475,6 +695,7 @@
       "icon": "groq.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "credentials",
@@ -515,11 +736,33 @@
           "data": [
             {
               "title": "Whisper Large V3 Turbo",
-              "value": "whisper-large-v3-turbo"
+              "value": "whisper-large-v3-turbo",
+              "id": "groq-whisper-v3-turbo",
+              "description": "Powered by Groq Whisper v3 Turbo - high-quality transcription with fast cloud processing. Handles challenging phrases well.",
+              "accuracy": 4,
+              "speed": 5,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_bring_your_own_key": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             },
             {
-              "title": "whisper-large-v3",
-              "value": "Whisper large-v3"
+              "title": "Whisper Large V3",
+              "value": "whisper-large-v3",
+              "id": "groq-whisper-large-v3",
+              "description": "Powered by Groq Whisper Large V3 - high accuracy transcription for multilingual audio.",
+              "accuracy": 5,
+              "speed": 4,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_bring_your_own_key": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             }
           ],
           "default": "whisper-large-v3-turbo"
@@ -534,6 +777,7 @@
       "icon": "elevenlabs.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "credentials",
@@ -567,7 +811,18 @@
           "data": [
             {
               "title": "Scribe v1",
-              "value": "scribe_v1"
+              "value": "scribe_v1",
+              "id": "elevenlabs-scribe",
+              "description": "Powered by ElevenLabs Scribe - high-quality transcription with advanced speech recognition and multilingual support.",
+              "accuracy": 5,
+              "speed": 3,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": true,
+              "is_bring_your_own_key": true,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false
             }
           ],
           "default": "scribe_v1"
@@ -582,6 +837,7 @@
       "icon": "local_whisper.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "modelName",
@@ -592,15 +848,48 @@
           "data": [
             {
               "title": "whisper-base",
-              "value": "openai_whisper-base"
+              "value": "openai_whisper-base",
+              "id": "local-whisper-base",
+              "description": "Local Whisper Base - local transcription with high accuracy.",
+              "accuracy": 6,
+              "speed": 6,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "147 MB"
             },
             {
               "title": "whisper-small_216MB",
-              "value": "openai_whisper-small_216MB"
+              "value": "openai_whisper-small_216MB",
+              "id": "local-whisper-small-216mb",
+              "description": "Local Whisper Small - local transcription with high accuracy.",
+              "accuracy": 6,
+              "speed": 6,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "216 MB"
             },
             {
               "title": "whisper-large-v3-v20240930_626MB",
-              "value": "openai_whisper-large-v3-v20240930_626MB"
+              "value": "openai_whisper-large-v3-v20240930_626MB",
+              "id": "local-whisper-large-v3-turbo-626mb",
+              "description": "Local Whisper Large V3 Turbo - local transcription with high accuracy.",
+              "accuracy": 6,
+              "speed": 6,
+              "language": "multilingual",
+              "is_realtime": false,
+              "is_online": false,
+              "tags": [],
+              "supports_punctuation": false,
+              "supports_captions": false,
+              "size": "626 MB"
             }
           ],
           "default": "openai_whisper-small_216MB"
@@ -624,6 +913,7 @@
       "icon": "gemini.png",
       "mode": "no-view",
       "commandType": "provider",
+      "provider_category": "stt",
       "preferences": [
         {
           "name": "credentials",
